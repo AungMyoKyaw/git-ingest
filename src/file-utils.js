@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-// Read and append file contents
-function appendFileContentsToTree(filePaths, outputFilePath) {
+// Append File Contents to Tree File
+function appendFileContents(filePaths, outputFilePath) {
   const separator = "=".repeat(48);
   const output = [];
 
@@ -18,8 +18,7 @@ function appendFileContentsToTree(filePaths, outputFilePath) {
     }
   });
 
-  // Append to the tree file
   fs.appendFileSync(outputFilePath, output.join("\n\n"), "utf8");
 }
 
-export { appendFileContentsToTree };
+export { appendFileContents };
