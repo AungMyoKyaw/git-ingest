@@ -3,7 +3,6 @@
 import { execSync } from "child_process";
 import { saveTreeToFile, getAllFilePaths } from "./tree-generator.js";
 import { appendFileContentsToTree } from "./read-file-and-append.js";
-import fs from "fs";
 
 // Parse command-line arguments
 const args = process.argv.slice(2);
