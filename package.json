@@ -1,0 +1,16 @@
+{
+  "name": "git-ingest",
+  "version": "1.0.0",
+  "main": "git-ingest.js",
+  "devDependencies": {},
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "git-ingest": "./src/cli.js"
+  },
+  "author": "Aung Myo Kyaw",
+  "license": "MIT",
+  "description": ""
+}
