@@ -1,4 +1,6 @@
-# 📜 Git-Ingest: A Handy CLI Tool for Ingesting Your Project into a File
+# 📜 Git-Ingest
+
+> A Handy CLI Tool for Ingesting Your Project into a File
 
 ## 🌟 Features
 
