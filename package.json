@@ -1,7 +1,7 @@
 {
   "name": "git-ingest",
   "version": "1.0.0",
-  "main": "git-ingest.js",
+  "main": "src/cli.js",
   "devDependencies": {},
   "type": "module",
   "scripts": {

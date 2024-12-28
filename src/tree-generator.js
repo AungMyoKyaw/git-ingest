@@ -35,7 +35,7 @@ function parseGitignore(gitignorePath) {
           .replace(/\*\*/g, ".*") // Match multiple directories
           .replace(/\*/g, "[^/]*") + // Match any file or folder name
         (isDirectory ? "(\\/.*)?$" : "$"), // Match entire directories if rule ends with '/'
-      "i"
+      "i",
     );
     return { pattern: regex, isDirectory };
   });
@@ -60,7 +60,7 @@ function displayTreeWithGitignore(
   depth = 0,
   prefix = "",
   rules = null,
-  output = []
+  output = [],
 ) {
   const directory = dirPath || __dirname;
 
