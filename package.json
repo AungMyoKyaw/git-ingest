@@ -12,5 +12,27 @@
   },
   "author": "Aung Myo Kyaw",
   "license": "MIT",
-  "description": ""
+  "description": "A Handy CLI Tool for Ingesting Your Project into a File",
+  "keywords": [
+    "git",
+    "cli",
+    "file-system",
+    "directory-structure",
+    "project-tree",
+    "codebase-analysis",
+    "gitignore-support",
+    "clipboard",
+    "automation",
+    "file-management",
+    "developer-tools",
+    "file-content",
+    "text-automation",
+    "command-line-tool",
+    "nodejs",
+    "node-cli",
+    "open-source",
+    "dev-tools",
+    "project-inspector",
+    "file-utilities"
+  ]
 }
