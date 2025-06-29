@@ -1,40 +1,10 @@
 # Git-Ingest 🚀
 
-[![npm version](https://badge.fury.io/js/git-ingest.svg)](https://badge.fury.io/js/git-ingest)
-[![npm downloads](https://img.shields.io/npm/dt/git-ingest.svg)](https://npmjs.com/package/git-ingest)
+[![npm version](https://badge.fury.io/js/git-ingest.svg?style=flat-square)](https://badge.fury.io/js/git-ingest)
+[![npm downloads](https://img.shields.io/npm/dt/git-ingest.svg?style=flat-square)](https://npmjs.com/package/git-ingest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 A powerful CLI tool for analyzing and ingesting project codebases into structured text files with advanced gitignore support, binary file detection, and cross-platform clipboard integration.
-
-## ✨ Features
-
-### 🔒 **Security First**
-
-- **Zero Command Injection Vulnerabilities**: Secure clipboard operations
-- **Input Validation**: Comprehensive path and argument validation
-- **Permission Checking**: Respects file system permissions
-
-### ⚡ **High Performance**
-
-- **Async Operations**: Non-blocking file processing
-- **Memory Efficient**: Streaming architecture for large projects
-- **Smart File Detection**: Automatic binary file detection and handling
-- **File Size Limits**: Configurable limits prevent resource exhaustion
-
-### 🎯 **Advanced CLI**
-
-- **Professional Interface**: Built with Commander.js
-- **Progress Indicators**: Real-time progress feedback with Ora
-- **Colored Output**: Beautiful terminal output with Chalk
-- **Multiple Output Formats**: Text, JSON, and Markdown support
-- **Verbose/Quiet Modes**: Configurable output levels
-
-### 📁 **Smart Directory Processing**
-
-- **Advanced Gitignore Support**: Full gitignore specification compliance
-- **Include/Exclude Patterns**: Flexible file filtering
-- **Binary File Handling**: Intelligent binary file detection
-- **Cross-Platform**: Works on macOS, Windows, and Linux
 
 ## 🚀 Installation
 
