@@ -2,7 +2,6 @@
 
 [![npm version](https://badge.fury.io/js/git-ingest.svg)](https://badge.fury.io/js/git-ingest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js CI](https://github.com/AungMyoKyaw/git-ingest/workflows/Node.js%20CI/badge.svg)](https://github.com/AungMyoKyaw/git-ingest/actions)
 
 A powerful CLI tool for analyzing and ingesting project codebases into structured text files with advanced gitignore support, binary file detection, and cross-platform clipboard integration.
 
