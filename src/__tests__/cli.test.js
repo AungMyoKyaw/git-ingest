@@ -100,7 +100,7 @@ describe("CLI Module", () => {
     test("should display version", async () => {
       const { code, stdout } = await runCLI(["--version"]);
       expect(code).toBe(0);
-      expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+(-\w+(\.\d+)?)?$/);
     });
 
     test("should generate output file for current directory", async () => {

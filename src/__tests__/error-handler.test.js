@@ -230,4 +230,256 @@ describe("Error Handler Module", () => {
       }).not.toThrow();
     });
   });
+
+  describe("Error Formatting", () => {
+    test("should format different error types correctly", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const directoryError = new DirectoryError(
+        "Directory not found",
+        "/nonexistent"
+      );
+      const fileError = new FileProcessingError(
+        "File read failed",
+        "/test.txt"
+      );
+      const configError = new ConfigurationError(
+        "Invalid config",
+        "maxSize",
+        "invalid"
+      );
+      const resourceError = new ResourceLimitError(
+        "Memory exceeded",
+        "memory",
+        100,
+        150
+      );
+
+      expect(() => {
+        handler.formatError(directoryError);
+        handler.formatError(fileError);
+        handler.formatError(configError);
+        handler.formatError(resourceError);
+        handler.formatError(new Error("Generic error"));
+      }).not.toThrow();
+    });
+  });
+
+  describe("Error Wrappers", () => {
+    test("should wrap async functions with error handling", async () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const failingFn = async () => {
+        throw new Error("Async operation failed");
+      };
+
+      const wrappedFn = handler.safeAsyncWrapper(failingFn, "test operation");
+
+      await expect(wrappedFn()).rejects.toThrow(GitIngestError);
+    });
+
+    test("should handle direct wrapAsync method", async () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const failingFn = async () => {
+        throw new Error("Direct wrap failed");
+      };
+
+      await expect(handler.wrapAsync(failingFn, "test")).rejects.toThrow(
+        GitIngestError
+      );
+    });
+
+    test("should handle error in safe wrappers", async () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const failingOperation = async () => {
+        throw new Error("Operation failed");
+      };
+
+      const safeFile = handler.safeFileOperation(failingOperation, "/test.txt");
+      await expect(safeFile()).rejects.toThrow(FileProcessingError);
+
+      const safeDir = handler.safeDirectoryOperation(failingOperation, "/test");
+      await expect(safeDir()).rejects.toThrow(DirectoryError);
+    });
+  });
+
+  describe("Error Handling with Verbose Mode", () => {
+    test("should handle errors with verbose output", () => {
+      const handler = new ErrorHandler({ verbose: true, quiet: false });
+
+      const gitIngestError = new GitIngestError("Test error", "TEST_CODE", {
+        detail: "test"
+      });
+
+      expect(() => {
+        handler.handle(gitIngestError);
+      }).not.toThrow();
+    });
+
+    test("should handle errors with stack traces", () => {
+      const handler = new ErrorHandler({ verbose: true, quiet: false });
+
+      const error = new Error("Error with stack");
+
+      expect(() => {
+        handler.handle(error);
+      }).not.toThrow();
+    });
+  });
+
+  describe("Error Suggestions", () => {
+    test("should provide suggestions for common errors", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      // Test clipboard error suggestions
+      const clipboardError = new Error("clipboard operation failed clipboard");
+      const formatted = handler.formatError(clipboardError);
+      expect(formatted.suggestions.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("JSON Serialization", () => {
+    test("should serialize GitIngestError to JSON", () => {
+      const error = new GitIngestError("Test error", "TEST_CODE", {
+        key: "value"
+      });
+      const json = error.toJSON();
+
+      expect(json.name).toBe("GitIngestError");
+      expect(json.message).toBe("Test error");
+      expect(json.code).toBe("TEST_CODE");
+      expect(json.details).toEqual({ key: "value" });
+      expect(json.timestamp).toBeTruthy();
+    });
+  });
+
+  describe("Additional Branch Coverage", () => {
+    test("should handle errors with exit process flag", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      // Mock process.exit to prevent actual exit
+      const originalExit = process.exit;
+      let exitCalled = false;
+      process.exit = () => {
+        exitCalled = true;
+      };
+
+      try {
+        const error = new Error("Test error");
+        handler.handle(error, true); // This should call process.exit
+        expect(exitCalled).toBe(true);
+      } finally {
+        process.exit = originalExit;
+      }
+    });
+
+    test("should handle quiet mode errors", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const error = new Error("Test error");
+      expect(() => {
+        handler.handle(error, false);
+      }).not.toThrow();
+    });
+
+    test("should format errors with empty suggestions", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const error = new Error("Unknown error type");
+      const formatted = handler.formatError(error);
+
+      expect(formatted.message).toMatch(/❌ Error:/);
+      expect(formatted.suggestions).toEqual([]);
+    });
+
+    test("should handle wrapAsync success case", async () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const successFn = async () => "success result";
+      const result = await handler.wrapAsync(successFn, "test operation");
+
+      expect(result).toBe("success result");
+    });
+
+    test("should handle safe operation success cases", async () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const successOperation = async () => "operation success";
+
+      const safeFile = handler.safeFileOperation(successOperation, "/test.txt");
+      const fileResult = await safeFile();
+      expect(fileResult).toBe("operation success");
+
+      const safeDir = handler.safeDirectoryOperation(successOperation, "/test");
+      const dirResult = await safeDir();
+      expect(dirResult).toBe("operation success");
+    });
+
+    test("should handle different error types in formatError", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      // Test different error code paths
+      const permissionError = new Error("permission denied");
+      const memoryError = new Error("out of memory something");
+      const networkError = new Error("network timeout");
+
+      expect(() => {
+        handler.formatError(permissionError);
+        handler.formatError(memoryError);
+        handler.formatError(networkError);
+      }).not.toThrow();
+    });
+
+    test("should handle ResourceLimitError formatting", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      const resourceError = new ResourceLimitError(
+        "Limit exceeded",
+        "files",
+        100,
+        150
+      );
+      const formatted = handler.formatError(resourceError);
+
+      expect(formatted.message).toMatch(/❌ Error:/);
+      expect(formatted.message).toContain("Limit exceeded");
+    });
+
+    test("should exercise more error code paths", () => {
+      const handler = new ErrorHandler({ quiet: true });
+
+      // Test different error message patterns to hit more branches
+      const errors = [
+        new Error("permission denied"),
+        new Error("EACCES"),
+        new Error("ENOENT"),
+        new Error("out of memory heap"),
+        new Error("memory"),
+        new Error("clipboard failed"),
+        new Error("random error")
+      ];
+
+      errors.forEach((error) => {
+        expect(() => {
+          handler.formatError(error);
+        }).not.toThrow();
+      });
+    });
+
+    test("should handle handle() with different verbosity settings", () => {
+      const handlerVerbose = new ErrorHandler({ verbose: true, quiet: false });
+      const handlerQuiet = new ErrorHandler({ verbose: false, quiet: true });
+
+      const error = new GitIngestError("Test error", "TEST", {
+        detail: "test"
+      });
+
+      expect(() => {
+        handlerVerbose.handle(error);
+        handlerQuiet.handle(error);
+      }).not.toThrow();
+    });
+  });
 });
