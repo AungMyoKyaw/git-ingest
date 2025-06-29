@@ -7,7 +7,7 @@
 export const DEFAULT_CONFIG = {
   // File processing
   MAX_FILE_SIZE_MB: 10,
-  TRUNCATE_SIZE_BYTES: 1024 * 1024, // 1MB
+  TRUNCATE_SIZE_BYTES: 2048 * 1024, // 2MB
 
   // Output formatting
   SEPARATOR_LENGTH: 48,
@@ -26,11 +26,13 @@ export const DEFAULT_CONFIG = {
 
     // Version control
     ".git/",
+    ".git",
     ".svn/",
     ".hg/",
 
     // Dependencies
     "node_modules/",
+    "node_modules",
     ".npm/",
     "bower_components/",
     "vendor/",
@@ -40,6 +42,7 @@ export const DEFAULT_CONFIG = {
 
     // Build directories
     "dist/",
+    "dist",
     "build/",
     "out/",
     ".next/",
@@ -188,12 +191,22 @@ export class Config {
    * Validate configuration values
    */
   validate() {
-    if (this.options.MAX_FILE_SIZE_MB <= 0) {
-      throw new Error("MAX_FILE_SIZE_MB must be positive");
+    if (typeof this.options.MAX_FILE_SIZE_MB !== "number" || this.options.MAX_FILE_SIZE_MB <= 0) {
+      throw new Error("MAX_FILE_SIZE_MB must be a positive number");
     }
 
-    if (!this.options.OUTPUT_FORMATS.includes("text")) {
-      throw new Error('OUTPUT_FORMATS must include "text"');
+    if (
+      typeof this.options.TRUNCATE_SIZE_BYTES !== "number" ||
+      this.options.TRUNCATE_SIZE_BYTES < 0
+    ) {
+      throw new Error("TRUNCATE_SIZE_BYTES must be a non-negative number");
+    }
+
+    if (
+      !Array.isArray(this.options.OUTPUT_FORMATS) ||
+      !this.options.OUTPUT_FORMATS.includes("text")
+    ) {
+      throw new Error('OUTPUT_FORMATS must be an array that includes "text"');
     }
 
     if (this.options.SEPARATOR_LENGTH < 10) {
@@ -227,7 +240,7 @@ export class Config {
   /**
    * Create separator line
    */
-  createSeparator(char = null, length = null) {
+  createSeparator(length = null, char = null) {
     const separatorChar = char || this.options.SEPARATOR_CHAR;
     const separatorLength = length || this.options.SEPARATOR_LENGTH;
     return separatorChar.repeat(separatorLength);
@@ -241,6 +254,7 @@ export class Config {
       exceedsLimit: sizeBytes > this.maxFileSizeBytes,
       isLarge: sizeBytes > this.largeFileThresholdBytes,
       sizeMB: sizeBytes / (1024 * 1024),
+      formattedSize: this.formatFileSize(sizeBytes),
     };
   }
 
@@ -249,11 +263,13 @@ export class Config {
    */
   formatFileSize(sizeBytes) {
     if (sizeBytes < 1024) {
-      return `${sizeBytes}B`;
+      return `${sizeBytes} B`;
     } else if (sizeBytes < 1024 * 1024) {
-      return `${(sizeBytes / 1024).toFixed(1)}KB`;
+      return `${(sizeBytes / 1024).toFixed(2)} KB`;
+    } else if (sizeBytes < 1024 * 1024 * 1024) {
+      return `${(sizeBytes / (1024 * 1024)).toFixed(2)} MB`;
     } else {
-      return `${(sizeBytes / (1024 * 1024)).toFixed(1)}MB`;
+      return `${(sizeBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
     }
   }
 

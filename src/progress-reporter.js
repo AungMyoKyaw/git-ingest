@@ -16,10 +16,11 @@ export class ProgressReporter {
     this.currentSpinner = null;
     this.startTime = null;
     this.stats = {
+      startTime: new Date(),
       filesProcessed: 0,
       filesSkipped: 0,
-      filesErrored: 0,
-      bytesProcessed: 0,
+      errors: 0,
+      totalBytes: 0,
       totalFiles: 0,
       estimatedTotalBytes: 0,
     };
@@ -101,7 +102,7 @@ export class ProgressReporter {
    * Report file processing progress
    */
   reportFileProgress(filePath, sizeBytes, status = "processed") {
-    this.stats.bytesProcessed += sizeBytes;
+    this.stats.totalBytes += sizeBytes;
 
     switch (status) {
       case "processed":
@@ -111,7 +112,7 @@ export class ProgressReporter {
         this.stats.filesSkipped++;
         break;
       case "error":
-        this.stats.filesErrored++;
+        this.stats.errors++;
         break;
     }
 
@@ -124,8 +125,7 @@ export class ProgressReporter {
 
     // Update spinner with current progress
     if (this.stats.totalFiles > 0) {
-      const completed =
-        this.stats.filesProcessed + this.stats.filesSkipped + this.stats.filesErrored;
+      const completed = this.stats.filesProcessed + this.stats.filesSkipped + this.stats.errors;
       this.update("Processing files...", completed, this.stats.totalFiles);
     }
   }
@@ -146,15 +146,15 @@ export class ProgressReporter {
       console.log(chalk.yellow(`   ⏭️  Skipped: ${this.stats.filesSkipped} files`));
     }
 
-    if (this.stats.filesErrored > 0) {
-      console.log(chalk.red(`   ❌ Errors: ${this.stats.filesErrored} files`));
+    if (this.stats.errors > 0) {
+      console.log(chalk.red(`   ❌ Errors: ${this.stats.errors} files`));
     }
 
-    console.log(chalk.blue(`   📁 Total size: ${this.formatBytes(this.stats.bytesProcessed)}`));
+    console.log(chalk.blue(`   📁 Total size: ${this.formatBytes(this.stats.totalBytes)}`));
     console.log(chalk.blue(`   ⏱️  Duration: ${durationFormatted}`));
 
-    if (this.stats.bytesProcessed > 0 && duration > 0) {
-      const throughput = this.stats.bytesProcessed / (duration / 1000);
+    if (this.stats.totalBytes > 0 && duration > 0) {
+      const throughput = this.stats.totalBytes / (duration / 1000);
       console.log(chalk.blue(`   🚀 Throughput: ${this.formatBytes(throughput)}/s`));
     }
   }
@@ -185,6 +185,32 @@ export class ProgressReporter {
     const estimatedMs = remaining / rate;
 
     return this.formatDuration(estimatedMs);
+  }
+
+  /**
+   * Get estimated time remaining for processing
+   */
+  getEstimatedTimeRemaining(totalFiles) {
+    const completed = this.stats.filesProcessed + this.stats.filesSkipped + this.stats.errors;
+    if (completed === 0) return 0;
+
+    // Use stats.startTime instead of this.startTime for consistent timing
+    const startTime = this.stats.startTime.getTime();
+    const elapsed = Date.now() - startTime;
+
+    if (elapsed === 0) return 1; // Return small positive value if no time has elapsed yet
+
+    const rate = completed / elapsed;
+    const remaining = totalFiles - completed;
+
+    return remaining / rate;
+  }
+
+  /**
+   * Update progress with current status
+   */
+  updateProgress(completed, total, message = "Processing...") {
+    this.update(message, completed, total);
   }
 
   /**
@@ -298,10 +324,11 @@ export class ProgressReporter {
    */
   resetStats() {
     this.stats = {
+      startTime: new Date(),
       filesProcessed: 0,
       filesSkipped: 0,
-      filesErrored: 0,
-      bytesProcessed: 0,
+      errors: 0,
+      totalBytes: 0,
       totalFiles: 0,
       estimatedTotalBytes: 0,
     };

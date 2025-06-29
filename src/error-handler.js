@@ -38,6 +38,7 @@ export class DirectoryError extends GitIngestError {
     super(message, "DIRECTORY_ERROR", { path, originalError: originalError?.message });
     this.name = "DirectoryError";
     this.path = path;
+    this.originalError = originalError;
   }
 }
 
@@ -49,6 +50,7 @@ export class FileProcessingError extends GitIngestError {
     super(message, "FILE_PROCESSING_ERROR", { filePath, originalError: originalError?.message });
     this.name = "FileProcessingError";
     this.filePath = filePath;
+    this.originalError = originalError;
   }
 }
 
@@ -208,6 +210,22 @@ export class ErrorHandler {
         originalError: error.message,
       });
     }
+  }
+
+  /**
+   * Wrap async functions with error handling
+   */
+  safeAsyncWrapper(fn, context = "operation") {
+    return async (...args) => {
+      try {
+        return await fn(...args);
+      } catch (error) {
+        throw new GitIngestError(`Failed to ${context}: ${error.message}`, "WRAPPED_ERROR", {
+          context,
+          originalError: error.message,
+        });
+      }
+    };
   }
 
   /**
