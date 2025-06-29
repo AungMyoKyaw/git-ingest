@@ -31,7 +31,7 @@ describe("Read File and Append Module", () => {
     );
     await fs.writeFile(
       path.join(testDir, "src", "code.js"),
-      "function hello() {\n  console.log(\"Hello World\");\n}\n\nexport default hello;"
+      'function hello() {\n  console.log("Hello World");\n}\n\nexport default hello;'
     );
     await fs.writeFile(
       path.join(testDir, "README.md"),

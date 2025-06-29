@@ -25,9 +25,13 @@ export default [
     },
     rules: {
       // Code style rules
-      indent: ["error", 2],
+      indent: [
+        "error",
+        2,
+        { SwitchCase: 1, ignoredNodes: ["ConditionalExpression"] }
+      ],
       "linebreak-style": ["error", "unix"],
-      quotes: ["error", "double"],
+      quotes: ["error", "double", { avoidEscape: true }],
       semi: ["error", "always"],
       "comma-dangle": ["error", "never"],
       "comma-spacing": ["error", { before: false, after: true }],

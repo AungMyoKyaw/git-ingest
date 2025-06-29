@@ -175,37 +175,37 @@ export class ErrorHandler {
     } else {
       // Handle Node.js system errors
       switch (error.code) {
-      case "ENOENT":
-        suggestions.push("Verify the file or directory exists");
-        suggestions.push("Check for typos in the path");
-        break;
-      case "EACCES":
-        suggestions.push("Check file/directory permissions");
-        suggestions.push("Run with appropriate user privileges");
-        break;
-      case "EMFILE":
-      case "ENFILE":
-        suggestions.push(
-          "Too many open files - try processing smaller directories"
-        );
-        suggestions.push("Increase system file descriptor limits");
-        break;
-      case "ENOSPC":
-        suggestions.push("Insufficient disk space");
-        suggestions.push("Free up disk space and try again");
-        break;
-      case "ENOMEM":
-        suggestions.push("Insufficient memory");
-        suggestions.push("Try processing smaller directories");
-        suggestions.push("Increase system memory or reduce --max-size limit");
-        break;
-      default:
-        if (error.message.includes("clipboard")) {
-          suggestions.push("Install clipboard tools for your platform:");
-          suggestions.push("  macOS: pbcopy (built-in)");
-          suggestions.push("  Linux: xclip or xsel");
-          suggestions.push("  Windows: clip (built-in)");
-        }
+        case "ENOENT":
+          suggestions.push("Verify the file or directory exists");
+          suggestions.push("Check for typos in the path");
+          break;
+        case "EACCES":
+          suggestions.push("Check file/directory permissions");
+          suggestions.push("Run with appropriate user privileges");
+          break;
+        case "EMFILE":
+        case "ENFILE":
+          suggestions.push(
+            "Too many open files - try processing smaller directories"
+          );
+          suggestions.push("Increase system file descriptor limits");
+          break;
+        case "ENOSPC":
+          suggestions.push("Insufficient disk space");
+          suggestions.push("Free up disk space and try again");
+          break;
+        case "ENOMEM":
+          suggestions.push("Insufficient memory");
+          suggestions.push("Try processing smaller directories");
+          suggestions.push("Increase system memory or reduce --max-size limit");
+          break;
+        default:
+          if (error.message.includes("clipboard")) {
+            suggestions.push("Install clipboard tools for your platform:");
+            suggestions.push("  macOS: pbcopy (built-in)");
+            suggestions.push("  Linux: xclip or xsel");
+            suggestions.push("  Windows: clip (built-in)");
+          }
       }
     }
 

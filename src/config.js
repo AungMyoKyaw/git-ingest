@@ -213,7 +213,7 @@ export class Config {
       !Array.isArray(this.options.OUTPUT_FORMATS) ||
       !this.options.OUTPUT_FORMATS.includes("text")
     ) {
-      throw new Error("OUTPUT_FORMATS must be an array that includes \"text\"");
+      throw new Error('OUTPUT_FORMATS must be an array that includes "text"');
     }
 
     if (this.options.SEPARATOR_LENGTH < 10) {

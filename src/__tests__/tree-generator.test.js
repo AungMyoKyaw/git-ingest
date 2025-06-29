@@ -31,11 +31,11 @@ describe("Tree Generator", () => {
     );
     await fs.writeFile(
       path.join(testDir, "package.json"),
-      "{\n  \"name\": \"test\"\n}"
+      '{\n  "name": "test"\n}'
     );
     await fs.writeFile(
       path.join(testDir, "src", "index.js"),
-      "console.log(\"Hello World\");"
+      'console.log("Hello World");'
     );
     await fs.writeFile(
       path.join(testDir, "src", "utils", "helper.js"),
