@@ -112,7 +112,7 @@ if (stats.size > MAX_FILE_SIZE) {
   const partialContent = fs.readFileSync(filePath, {
     encoding: "utf8",
     start: 0,
-    end: MAX_FILE_SIZE
+    end: MAX_FILE_SIZE,
   });
   output.push(
     `${partialContent}\n\n[File truncated - showing first ${MAX_FILE_SIZE} bytes of ${stats.size}]`
@@ -150,7 +150,7 @@ const options = {
   separator: "=".repeat(48),
   includeLineNumbers: false,
   maxFileSize: 1024 * 1024, // 1MB
-  encoding: "utf8"
+  encoding: "utf8",
 };
 ```
 

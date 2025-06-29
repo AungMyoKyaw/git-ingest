@@ -1,150 +1,291 @@
-import fs from "fs";
+import fs from "fs/promises";
+import { existsSync, statSync } from "fs";
 import path from "path";
+import ignore from "ignore";
+import { isBinaryFileSync } from "isbinaryfile";
+import chalk from "chalk";
 
-// Parse `.gitignore` rules into regex patterns
-function parseGitignore(gitignorePath) {
-  let rules = [];
+// Default ignore patterns for common files that should be excluded
+const DEFAULT_IGNORE_PATTERNS = [
+  // Generated output files
+  "git-ingest-*.txt",
+  "git-ingest-*.json",
 
-  if (fs.existsSync(gitignorePath)) {
-    rules = fs
-      .readFileSync(gitignorePath, "utf8")
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith("#")); // Ignore comments and empty lines
-  }
+  // Git directory
+  ".git/",
 
-  // Add hardcoded dynamic rule
-  rules.push("git-ingest-*.txt"); // Dynamically ignore `git-ingest` files
+  // Common binary/media files
+  "*.jpg",
+  "*.jpeg",
+  "*.png",
+  "*.gif",
+  "*.svg",
+  "*.webp",
+  "*.ico",
+  "*.pdf",
+  "*.zip",
+  "*.tar",
+  "*.gz",
+  "*.rar",
+  "*.7z",
+  "*.mp4",
+  "*.avi",
+  "*.mov",
+  "*.mp3",
+  "*.wav",
+  "*.exe",
+  "*.dll",
+  "*.so",
+  "*.dylib",
 
-  // Add .gitignore file itself
-  rules.push(".gitignore");
+  // Package manager directories
+  "node_modules/",
+  ".npm/",
+  "bower_components/",
+  "vendor/",
 
-  // Ignore All Image Files for Development
-  const imageExtensions = ["jpg", "jpeg", "png", "gif", "svg", "webp", "ico"];
-  imageExtensions.forEach((ext) => {
-    rules.push(`*.${ext}`);
-  });
+  // Build directories
+  "dist/",
+  "build/",
+  "out/",
+  ".next/",
+  ".nuxt/",
 
-  return rules.map((rule) => {
-    const isDirectory = rule.endsWith("/");
-    const normalizedRule = rule.replace(/\/$/, ""); // Remove trailing slash for directories
-    const regex = new RegExp(
-      "^" +
-        normalizedRule
-          .replace(/\./g, "\\.") // Escape dots
-          .replace(/\*\*/g, ".*") // Match multiple directories
-          .replace(/\*/g, "[^/]*") + // Match any file or folder name
-        (isDirectory ? "(\\/.*)?$" : "$"), // Match entire directories if rule ends with '/'
-      "i"
-    );
-    return { pattern: regex, isDirectory };
-  });
-}
+  // IDE and editor files
+  ".vscode/",
+  ".idea/",
+  "*.swp",
+  "*.swo",
+  "*~",
 
-// Check if a path is ignored based on `.gitignore` rules
-function isIgnored(filePath, rules, baseDir) {
-  const relativePath = path.relative(baseDir, filePath).replace(/\\/g, "/"); // Normalize for cross-platform
+  // OS files
+  ".DS_Store",
+  "Thumbs.db",
+  "desktop.ini",
 
-  // Always ignore `.git` directory
-  if (relativePath === ".git" || relativePath.startsWith(".git/")) {
-    return true;
-  }
+  // Log files
+  "*.log",
+  "logs/",
 
-  // Apply `.gitignore` rules
-  return rules.some(({ pattern }) => pattern.test(relativePath));
-}
+  // Cache directories
+  ".cache/",
+  ".tmp/",
+  "tmp/",
+];
 
-// Recursive tree display with `.gitignore` support
-function displayTreeWithGitignore(
-  dirPath,
-  depth = 0,
-  prefix = "",
-  rules = null,
-  output = []
-) {
-  const directory = dirPath || __dirname;
+// Parse gitignore files and create ignore instance
+async function createIgnoreFilter(baseDir, options = {}) {
+  const ig = ignore();
 
-  // Load `.gitignore` rules if not already loaded
-  if (!rules) {
-    const gitignorePath = path.join(directory, ".gitignore");
-    rules = parseGitignore(gitignorePath);
-  }
+  try {
+    // Add default patterns
+    ig.add(DEFAULT_IGNORE_PATTERNS);
 
-  // Read directory contents
-  const items = fs.readdirSync(directory).filter((item) => {
-    const fullPath = path.join(directory, item);
-    return !isIgnored(fullPath, rules, dirPath); // Apply `.gitignore` rules
-  });
-
-  // Iterate through items
-  items.forEach((item, index) => {
-    const itemPath = path.join(directory, item);
-    const isDir = fs.lstatSync(itemPath).isDirectory();
-
-    // Check if this is the last item
-    const isLast = index === items.length - 1;
-
-    // Tree symbols
-    const branch = isLast ? "└── " : "├── ";
-    const newPrefix = prefix + (isLast ? "    " : "│   ");
-
-    // Append the current item to output
-    output.push(`${prefix}${branch}${item}`);
-
-    // If it's a directory, recursively process its contents
-    if (isDir) {
-      displayTreeWithGitignore(itemPath, depth + 1, newPrefix, rules, output);
+    // Add custom exclude patterns
+    if (options.exclude) {
+      ig.add(options.exclude);
     }
-  });
 
+    // Read .gitignore file if it exists
+    const gitignorePath = path.join(baseDir, ".gitignore");
+    if (existsSync(gitignorePath)) {
+      try {
+        const gitignoreContent = await fs.readFile(gitignorePath, "utf8");
+        ig.add(gitignoreContent);
+
+        if (options.verbose) {
+          console.log(chalk.gray(`📋 Loaded .gitignore from ${gitignorePath}`));
+        }
+      } catch (error) {
+        if (options.verbose) {
+          console.warn(chalk.yellow(`⚠️  Could not read .gitignore: ${error.message}`));
+        }
+      }
+    }
+
+    // Handle include patterns (if specified, only include matching files)
+    let includeFilter = null;
+    if (options.include) {
+      includeFilter = ignore().add(options.include);
+    }
+
+    return { ignore: ig, includeFilter };
+  } catch (error) {
+    throw new Error(`Failed to create ignore filter: ${error.message}`);
+  }
+}
+
+// Check if a file should be ignored
+function shouldIgnore(relativePath, ignoreFilter, includeFilter) {
+  // Check include filter first (if specified)
+  if (includeFilter && !includeFilter.ignores(relativePath)) {
+    return true; // Not in include list, so ignore it
+  }
+
+  // Check ignore patterns
+  return ignoreFilter.ignores(relativePath);
+}
+
+// Check if file is binary and should be skipped for content
+function shouldSkipForContent(filePath, options = {}) {
+  try {
+    // Check file size limit
+    const maxSizeBytes = (options.maxSize || 10) * 1024 * 1024; // Convert MB to bytes
+
+    // Use sync stat since isBinaryFileSync also uses sync operations
+    const stats = existsSync(filePath) ? statSync(filePath) : null;
+
+    if (stats && stats.size > maxSizeBytes) {
+      return { skip: true, reason: `File too large (${(stats.size / 1024 / 1024).toFixed(2)}MB)` };
+    }
+
+    // Check if binary
+    if (isBinaryFileSync(filePath)) {
+      return { skip: true, reason: "Binary file" };
+    }
+
+    return { skip: false };
+  } catch (error) {
+    return { skip: true, reason: `Error checking file: ${error.message}` };
+  }
+}
+
+// Async directory tree generation with gitignore support
+async function displayTreeWithGitignore(dirPath, options = {}) {
+  const output = [];
+  const { ignore: ignoreFilter, includeFilter } = await createIgnoreFilter(dirPath, options);
+
+  async function traverse(currentPath, depth = 0, prefix = "") {
+    try {
+      const items = await fs.readdir(currentPath);
+
+      // Filter and sort items
+      const filteredItems = [];
+      for (const item of items) {
+        const fullPath = path.join(currentPath, item);
+        const relativePath = path.relative(dirPath, fullPath);
+
+        if (!shouldIgnore(relativePath, ignoreFilter, includeFilter)) {
+          try {
+            const stats = await fs.stat(fullPath);
+            filteredItems.push({
+              name: item,
+              fullPath,
+              isDirectory: stats.isDirectory(),
+              size: stats.size,
+            });
+          } catch (statError) {
+            if (options.verbose) {
+              console.warn(chalk.yellow(`⚠️  Could not stat ${fullPath}: ${statError.message}`));
+            }
+          }
+        }
+      }
+
+      // Sort: directories first, then files, alphabetically
+      filteredItems.sort((a, b) => {
+        if (a.isDirectory && !b.isDirectory) return -1;
+        if (!a.isDirectory && b.isDirectory) return 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      // Process each item
+      for (let i = 0; i < filteredItems.length; i++) {
+        const item = filteredItems[i];
+        const isLast = i === filteredItems.length - 1;
+
+        // Tree symbols
+        const branch = isLast ? "└── " : "├── ";
+        const newPrefix = prefix + (isLast ? "    " : "│   ");
+
+        // Add size info for large files
+        let displayName = item.name;
+        if (!item.isDirectory && item.size > 1024 * 1024) {
+          displayName += chalk.gray(` (${(item.size / 1024 / 1024).toFixed(1)}MB)`);
+        }
+
+        output.push(`${prefix}${branch}${displayName}`);
+
+        // Recursively process directories
+        if (item.isDirectory) {
+          await traverse(item.fullPath, depth + 1, newPrefix);
+        }
+      }
+    } catch (error) {
+      if (options.verbose) {
+        console.warn(chalk.yellow(`⚠️  Could not read directory ${currentPath}: ${error.message}`));
+      }
+      output.push(`${prefix}[Error reading directory: ${error.message}]`);
+    }
+  }
+
+  await traverse(dirPath);
   return output;
 }
 
-// Retrieve all file paths in a directory
-function getAllFilePaths(dirPath, rules = null, filePaths = []) {
-  const directory = dirPath || __dirname;
+// Async file path collection
+async function getAllFilePaths(dirPath, options = {}) {
+  const filePaths = [];
+  const { ignore: ignoreFilter, includeFilter } = await createIgnoreFilter(dirPath, options);
 
-  // Load `.gitignore` rules if not already loaded
-  if (!rules) {
-    const gitignorePath = path.join(directory, ".gitignore");
-    rules = parseGitignore(gitignorePath);
+  async function traverse(currentPath) {
+    try {
+      const items = await fs.readdir(currentPath);
+
+      for (const item of items) {
+        const fullPath = path.join(currentPath, item);
+        const relativePath = path.relative(dirPath, fullPath);
+
+        if (!shouldIgnore(relativePath, ignoreFilter, includeFilter)) {
+          try {
+            const stats = await fs.stat(fullPath);
+
+            if (stats.isDirectory()) {
+              await traverse(fullPath);
+            } else {
+              filePaths.push(fullPath);
+            }
+          } catch (statError) {
+            if (options.verbose) {
+              console.warn(chalk.yellow(`⚠️  Could not stat ${fullPath}: ${statError.message}`));
+            }
+          }
+        }
+      }
+    } catch (error) {
+      if (options.verbose) {
+        console.warn(chalk.yellow(`⚠️  Could not read directory ${currentPath}: ${error.message}`));
+      }
+    }
   }
 
-  // Read directory contents
-  const items = fs.readdirSync(directory).filter((item) => {
-    const fullPath = path.join(directory, item);
-    return !isIgnored(fullPath, rules, dirPath); // Apply `.gitignore` rules
-  });
-
-  // Iterate through items
-  items.forEach((item) => {
-    const itemPath = path.join(directory, item);
-    const isDir = fs.lstatSync(itemPath).isDirectory();
-
-    if (isDir) {
-      // If it's a directory, recursively collect its file paths
-      getAllFilePaths(itemPath, rules, filePaths);
-    } else {
-      // If it's a file, add its path to the list
-      filePaths.push(itemPath);
-    }
-  });
-
+  await traverse(dirPath);
   return filePaths;
 }
 
-// Save the tree to a file
-function saveTreeToFile(dirPath, fileName = "git-ingest-unixtime.txt") {
-  const output = displayTreeWithGitignore(dirPath);
-  const header = `Directory structure:`;
-  output.unshift(header);
+// Save tree to file with enhanced formatting
+async function saveTreeToFile(dirPath, fileName, options = {}) {
+  try {
+    const output = await displayTreeWithGitignore(dirPath, options);
 
-  // Write to file
-  fs.writeFileSync(fileName, output.join("\n"), "utf8");
+    // Create header with metadata
+    const header = [
+      `Directory structure for: ${path.resolve(dirPath)}`,
+      `Generated on: ${new Date().toISOString()}`,
+      `Total items: ${output.length}`,
+      "",
+    ];
 
-  // append new two lines
-  fs.appendFileSync(fileName, "\n\n", "utf8");
-  console.log(`Directory tree saved to ${fileName}`);
+    const content = [...header, ...output, "", ""].join("\n");
+
+    await fs.writeFile(fileName, content, "utf8");
+
+    if (options.verbose) {
+      console.log(chalk.gray(`📁 Directory tree saved to ${fileName}`));
+    }
+  } catch (error) {
+    throw new Error(`Failed to save tree to file: ${error.message}`);
+  }
 }
 
-export { displayTreeWithGitignore, saveTreeToFile, getAllFilePaths };
+export { displayTreeWithGitignore, saveTreeToFile, getAllFilePaths, shouldSkipForContent };

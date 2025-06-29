@@ -1,18 +1,44 @@
 {
   "name": "git-ingest",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "src/cli.js",
-  "devDependencies": {},
   "type": "module",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/cli.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "prepare": "husky install"
   },
   "bin": {
     "git-ingest": "./src/cli.js"
   },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "ignore": "^5.3.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "clipboardy": "^4.0.0",
+    "isbinaryfile": "^5.0.0",
+    "mime-types": "^2.1.35"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
+  },
   "author": "Aung Myo Kyaw",
   "license": "MIT",
-  "description": "A Handy CLI Tool for Ingesting Your Project into a File",
+  "description": "A powerful CLI tool for analyzing and ingesting project codebases into structured text files with advanced gitignore support, binary file detection, and cross-platform clipboard integration",
   "keywords": [
     "git",
     "cli",
@@ -33,6 +59,18 @@
     "open-source",
     "dev-tools",
     "project-inspector",
-    "file-utilities"
-  ]
+    "file-utilities",
+    "async",
+    "streaming",
+    "performance",
+    "security"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AungMyoKyaw/git-ingest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AungMyoKyaw/git-ingest/issues"
+  },
+  "homepage": "https://github.com/AungMyoKyaw/git-ingest#readme"
 }
