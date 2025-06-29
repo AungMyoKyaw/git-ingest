@@ -1,6 +1,7 @@
 # Git-Ingest 🚀
 
 [![npm version](https://badge.fury.io/js/git-ingest.svg)](https://badge.fury.io/js/git-ingest)
+[![npm downloads](https://img.shields.io/npm/dt/git-ingest.svg)](https://npmjs.com/package/git-ingest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A powerful CLI tool for analyzing and ingesting project codebases into structured text files with advanced gitignore support, binary file detection, and cross-platform clipboard integration.
@@ -309,9 +310,9 @@ Git-Ingest v2.0 represents a complete rewrite with focus on security, performanc
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to get started.
 
-### Development Workflow
+### Quick Start for Contributors
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
@@ -334,12 +335,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ignore](https://github.com/kaelzhang/node-ignore) for gitignore support
 - [isbinaryfile](https://github.com/gjtorikian/isBinaryFile) for binary detection
 - [clipboardy](https://github.com/sindresorhus/clipboardy) for clipboard operations
-
-## 📞 Support
-
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/AungMyoKyaw/git-ingest/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/AungMyoKyaw/git-ingest/discussions)
-- 📧 **Email**: [contact@example.com](mailto:contact@example.com)
 
 ---
 
