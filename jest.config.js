@@ -16,4 +16,7 @@ export default {
     },
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  // Ensure proper cleanup
+  forceExit: false,
+  detectOpenHandles: true,
 };

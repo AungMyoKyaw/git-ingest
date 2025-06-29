@@ -21,20 +21,22 @@
     "git-ingest": "./src/cli.js"
   },
   "dependencies": {
-    "commander": "^11.0.0",
-    "ignore": "^5.3.0",
+    "@eslint/js": "^9.30.0",
     "chalk": "^5.3.0",
-    "ora": "^7.0.1",
     "clipboardy": "^4.0.0",
+    "commander": "^14.0.0",
+    "globals": "^16.2.0",
+    "ignore": "^7.0.5",
     "isbinaryfile": "^5.0.0",
-    "mime-types": "^2.1.35"
+    "mime-types": "^3.0.1",
+    "ora": "^8.2.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
+    "eslint": "^9.30.0",
     "husky": "^9.0.11",
-    "lint-staged": "^15.2.2"
+    "jest": "^30.0.3",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.2.5"
   },
   "author": "Aung Myo Kyaw",
   "license": "MIT",

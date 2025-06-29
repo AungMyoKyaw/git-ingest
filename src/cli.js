@@ -207,7 +207,7 @@ class GitIngestApp {
       this.progress.succeed("Content copied to clipboard");
     } catch (clipError) {
       this.progress.fail("Failed to copy to clipboard");
-      this.errorHandler.warn("Clipboard operation failed: " + clipError.message);
+      this.errorHandler.warn(`Clipboard operation failed: ${clipError.message}`);
       this.errorHandler.info("Try installing clipboard tools for your platform:");
       this.errorHandler.info("  macOS: pbcopy (built-in)");
       this.errorHandler.info("  Linux: xclip or xsel");

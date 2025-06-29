@@ -65,13 +65,17 @@ describe("CLI Module", () => {
       });
 
       child.on("close", (code) => {
+        clearTimeout(timeoutId);
         resolve({ code, stdout, stderr });
       });
 
-      child.on("error", reject);
+      child.on("error", (error) => {
+        clearTimeout(timeoutId);
+        reject(error);
+      });
 
-      // Set timeout
-      setTimeout(() => {
+      // Set timeout with proper cleanup
+      const timeoutId = setTimeout(() => {
         child.kill();
         reject(new Error("CLI command timeout"));
       }, 10000);
