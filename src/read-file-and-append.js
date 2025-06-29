@@ -4,35 +4,31 @@ import path from "path";
 import { pipeline } from "stream/promises";
 import chalk from "chalk";
 import { shouldSkipForContent } from "./tree-generator.js";
-
-// Configuration constants
-const DEFAULT_MAX_FILE_SIZE_MB = 10;
-const CONTENT_TRUNCATE_SIZE = 1024 * 1024; // 1MB truncation point for large files
-const SEPARATOR_LENGTH = 48;
-
-// Create separator line
-function createSeparator(char = "=", length = SEPARATOR_LENGTH) {
-  return char.repeat(length);
-}
+import { Config } from "./config.js";
 
 // Format file header with metadata
-function formatFileHeader(filePath) {
+function formatFileHeader(filePath, config = null) {
+  const cfg = config || new Config();
   const relativePath = path.relative(process.cwd(), filePath);
-  const separator = createSeparator();
+  const separator = cfg.createSeparator();
 
   return `${separator}\nFile: ${relativePath}\n${separator}\n`;
 }
 
 // Handle binary or large file placeholders
-function createFilePlaceholder(filePath, skipInfo) {
+function createFilePlaceholder(filePath, skipInfo, config = null) {
+  const cfg = config || new Config();
   const relativePath = path.relative(process.cwd(), filePath);
-  const separator = createSeparator();
+  const separator = cfg.createSeparator();
 
   return `${separator}\nFile: ${relativePath}\n${separator}\n[${skipInfo.reason}]\n\n`;
 }
 
 // Truncate large text files
-async function readFileWithTruncation(filePath, maxSize = CONTENT_TRUNCATE_SIZE) {
+async function readFileWithTruncation(filePath, config = null) {
+  const cfg = config || new Config();
+  const maxSize = cfg.options.TRUNCATE_SIZE_BYTES;
+
   try {
     const handle = await fs.open(filePath, "r");
     const buffer = Buffer.alloc(maxSize);
@@ -44,7 +40,7 @@ async function readFileWithTruncation(filePath, maxSize = CONTENT_TRUNCATE_SIZE)
     // Check if file was truncated
     const stats = await fs.stat(filePath);
     if (stats.size > maxSize) {
-      const truncatedMessage = `\n\n[File truncated - showing first ${(maxSize / 1024).toFixed(0)}KB of ${(stats.size / 1024).toFixed(0)}KB total]`;
+      const truncatedMessage = `\n\n[File truncated - showing first ${cfg.formatFileSize(maxSize)} of ${cfg.formatFileSize(stats.size)} total]`;
       return content + truncatedMessage;
     }
 
@@ -63,7 +59,16 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
     return;
   }
 
-  const maxFileSize = (options.maxSize || DEFAULT_MAX_FILE_SIZE_MB) * 1024 * 1024;
+  const config = options.config || new Config();
+
+  // Handle legacy maxSize option for backward compatibility
+  if (options.maxSize !== undefined && !options.config) {
+    config.options.MAX_FILE_SIZE_MB = options.maxSize;
+    config.maxFileSizeBytes = config.options.MAX_FILE_SIZE_MB * 1024 * 1024;
+  }
+
+  const progress = options.progress;
+
   let processedCount = 0;
   let skippedCount = 0;
   let errorCount = 0;
@@ -75,13 +80,17 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
     for (const filePath of filePaths) {
       try {
         // Check if file should be skipped (binary, too large, etc.)
-        const skipInfo = shouldSkipForContent(filePath, options);
+        const skipInfo = shouldSkipForContent(filePath, { ...options, config });
 
         if (skipInfo.skip) {
           // Write placeholder for skipped files
-          const placeholder = createFilePlaceholder(filePath, skipInfo);
+          const placeholder = createFilePlaceholder(filePath, skipInfo, config);
           writeStream.write(placeholder);
           skippedCount++;
+
+          if (progress) {
+            progress.reportFileProgress(filePath, 0, "skipped");
+          }
 
           if (options.verbose) {
             console.log(
@@ -94,7 +103,7 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
         }
 
         // Write file header
-        const header = formatFileHeader(filePath);
+        const header = formatFileHeader(filePath, config);
         writeStream.write(header);
 
         // Read and write file content
@@ -102,9 +111,9 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
           let content;
           const stats = await fs.stat(filePath);
 
-          if (stats.size > maxFileSize) {
+          if (stats.size > config.maxFileSizeBytes) {
             // Use truncation for very large files
-            content = await readFileWithTruncation(filePath, CONTENT_TRUNCATE_SIZE);
+            content = await readFileWithTruncation(filePath, config);
           } else {
             // Read normal files completely
             content = await fs.readFile(filePath, "utf8");
@@ -115,10 +124,16 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
 
           processedCount++;
 
+          if (progress) {
+            progress.reportFileProgress(filePath, stats.size, "processed");
+          }
+
           if (options.verbose) {
-            const sizeKB = (stats.size / 1024).toFixed(1);
+            const sizeFormatted = config.formatFileSize(stats.size);
             console.log(
-              chalk.green(`✅ Processed ${path.relative(process.cwd(), filePath)} (${sizeKB}KB)`)
+              chalk.green(
+                `✅ Processed ${path.relative(process.cwd(), filePath)} (${sizeFormatted})`
+              )
             );
           }
         } catch (readError) {
@@ -126,6 +141,10 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
           const errorMessage = `Error reading file: ${readError.message}`;
           writeStream.write(`${errorMessage}\n\n`);
           errorCount++;
+
+          if (progress) {
+            progress.reportFileProgress(filePath, 0, "error");
+          }
 
           if (options.verbose) {
             console.warn(
@@ -137,6 +156,9 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
         }
       } catch (fileError) {
         errorCount++;
+        if (progress) {
+          progress.reportFileProgress(filePath, 0, "error");
+        }
         if (options.verbose) {
           console.warn(
             chalk.red(
@@ -205,6 +227,15 @@ async function appendFileContentsStreaming(filePaths, outputFilePath, options = 
 
 // Utility function to get file processing statistics
 async function getFileStats(filePaths, options = {}) {
+  // Handle legacy maxSize option for backward compatibility
+  let config = options.config || new Config();
+  if (options.maxSize !== undefined && !options.config) {
+    config = new Config();
+    config.options.MAX_FILE_SIZE_MB = options.maxSize;
+    config.maxFileSizeBytes = config.options.MAX_FILE_SIZE_MB * 1024 * 1024;
+    options = { ...options, config };
+  }
+
   let totalSize = 0;
   let textFiles = 0;
   let binaryFiles = 0;

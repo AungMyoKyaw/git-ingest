@@ -4,87 +4,16 @@ import path from "path";
 import ignore from "ignore";
 import { isBinaryFileSync } from "isbinaryfile";
 import chalk from "chalk";
-
-// Default ignore patterns for common files that should be excluded
-const DEFAULT_IGNORE_PATTERNS = [
-  // Generated output files
-  "git-ingest-*.txt",
-  "git-ingest-*.json",
-
-  // Git directory
-  ".git/",
-
-  // Common binary/media files
-  "*.jpg",
-  "*.jpeg",
-  "*.png",
-  "*.gif",
-  "*.svg",
-  "*.webp",
-  "*.ico",
-  "*.pdf",
-  "*.zip",
-  "*.tar",
-  "*.gz",
-  "*.rar",
-  "*.7z",
-  "*.mp4",
-  "*.avi",
-  "*.mov",
-  "*.mp3",
-  "*.wav",
-  "*.exe",
-  "*.dll",
-  "*.so",
-  "*.dylib",
-
-  // Package manager directories
-  "node_modules/",
-  ".npm/",
-  "bower_components/",
-  "vendor/",
-
-  // Build directories
-  "dist/",
-  "build/",
-  "out/",
-  ".next/",
-  ".nuxt/",
-
-  // IDE and editor files
-  ".vscode/",
-  ".idea/",
-  "*.swp",
-  "*.swo",
-  "*~",
-
-  // OS files
-  ".DS_Store",
-  "Thumbs.db",
-  "desktop.ini",
-
-  // Log files
-  "*.log",
-  "logs/",
-
-  // Cache directories
-  ".cache/",
-  ".tmp/",
-  "tmp/",
-];
+import { Config } from "./config.js";
 
 // Parse gitignore files and create ignore instance
 async function createIgnoreFilter(baseDir, options = {}) {
+  const config = options.config || new Config();
   const ig = ignore();
 
   try {
-    // Add default patterns
-    ig.add(DEFAULT_IGNORE_PATTERNS);
-
-    // Add custom exclude patterns
-    if (options.exclude) {
-      ig.add(options.exclude);
-    }
+    // Add default patterns from config
+    ig.add(config.getIgnorePatterns(options.exclude));
 
     // Read .gitignore file if it exists
     const gitignorePath = path.join(baseDir, ".gitignore");
@@ -129,14 +58,22 @@ function shouldIgnore(relativePath, ignoreFilter, includeFilter) {
 // Check if file is binary and should be skipped for content
 function shouldSkipForContent(filePath, options = {}) {
   try {
-    // Check file size limit
-    const maxSizeBytes = (options.maxSize || 10) * 1024 * 1024; // Convert MB to bytes
+    // Handle legacy maxSize option for backward compatibility
+    let config = options.config || new Config();
+    if (options.maxSize !== undefined && !options.config) {
+      config = new Config();
+      config.options.MAX_FILE_SIZE_MB = options.maxSize;
+      config.maxFileSizeBytes = config.options.MAX_FILE_SIZE_MB * 1024 * 1024;
+    }
 
     // Use sync stat since isBinaryFileSync also uses sync operations
     const stats = existsSync(filePath) ? statSync(filePath) : null;
 
-    if (stats && stats.size > maxSizeBytes) {
-      return { skip: true, reason: `File too large (${(stats.size / 1024 / 1024).toFixed(2)}MB)` };
+    if (stats && stats.size > config.maxFileSizeBytes) {
+      return {
+        skip: true,
+        reason: `File too large (${config.formatFileSize(stats.size)})`,
+      };
     }
 
     // Check if binary
