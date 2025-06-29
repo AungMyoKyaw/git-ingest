@@ -66,9 +66,10 @@ class GitIngestApp {
   /**
    * Initialize the application with options
    */
+  // eslint-disable-next-line require-await
   async initialize(options) {
     // Create configuration
-    this.config = await this.createConfig(options);
+    this.config = this.createConfig(options);
 
     // Create error handler
     this.errorHandler = createErrorHandler({
@@ -89,7 +90,7 @@ class GitIngestApp {
   /**
    * Create configuration from options
    */
-  async createConfig(options) {
+  createConfig(options) {
     const config = new Config();
 
     // Override with command line options
