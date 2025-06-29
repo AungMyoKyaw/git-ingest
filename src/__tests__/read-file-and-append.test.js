@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import {
   appendFileContentsToTree,
   appendFileContentsStreaming,
-  getFileStats,
+  getFileStats
 } from "../read-file-and-append.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +25,10 @@ describe("Read File and Append Module", () => {
       path.join(testDir, "medium.txt"),
       `${"A".repeat(1000)}\nMedium file content\n${"B".repeat(1000)}`
     );
-    await fs.writeFile(path.join(testDir, "large.txt"), "Large file content\n".repeat(50000));
+    await fs.writeFile(
+      path.join(testDir, "large.txt"),
+      "Large file content\n".repeat(50000)
+    );
     await fs.writeFile(
       path.join(testDir, "src", "code.js"),
       'function hello() {\n  console.log("Hello World");\n}\n\nexport default hello;'
@@ -40,7 +43,9 @@ describe("Read File and Append Module", () => {
     await fs.writeFile(path.join(testDir, "binary.bin"), binaryData);
 
     // Create an image file (PNG header)
-    const pngHeader = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    const pngHeader = Buffer.from([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a
+    ]);
     await fs.writeFile(path.join(testDir, "image.png"), pngHeader);
   });
 
@@ -68,7 +73,10 @@ describe("Read File and Append Module", () => {
 
   describe("appendFileContentsToTree", () => {
     test("should append text file contents", async () => {
-      const filePaths = [path.join(testDir, "small.txt"), path.join(testDir, "README.md")];
+      const filePaths = [
+        path.join(testDir, "small.txt"),
+        path.join(testDir, "README.md")
+      ];
 
       await appendFileContentsToTree(filePaths, outputFile);
 
@@ -95,7 +103,7 @@ describe("Read File and Append Module", () => {
       const filePaths = [
         path.join(testDir, "small.txt"),
         path.join(testDir, "binary.bin"),
-        path.join(testDir, "image.png"),
+        path.join(testDir, "image.png")
       ];
 
       await appendFileContentsToTree(filePaths, outputFile);
@@ -128,7 +136,10 @@ describe("Read File and Append Module", () => {
     });
 
     test("should handle file read errors gracefully", async () => {
-      const filePaths = [path.join(testDir, "small.txt"), path.join(testDir, "nonexistent.txt")];
+      const filePaths = [
+        path.join(testDir, "small.txt"),
+        path.join(testDir, "nonexistent.txt")
+      ];
 
       await appendFileContentsToTree(filePaths, outputFile);
 
@@ -138,7 +149,10 @@ describe("Read File and Append Module", () => {
     });
 
     test("should show processing summary in verbose mode", async () => {
-      const filePaths = [path.join(testDir, "small.txt"), path.join(testDir, "binary.bin")];
+      const filePaths = [
+        path.join(testDir, "small.txt"),
+        path.join(testDir, "binary.bin")
+      ];
 
       // Capture console output
       const consoleLogs = [];
@@ -146,7 +160,9 @@ describe("Read File and Append Module", () => {
       console.log = (...args) => consoleLogs.push(args.join(" "));
 
       try {
-        await appendFileContentsToTree(filePaths, outputFile, { verbose: true });
+        await appendFileContentsToTree(filePaths, outputFile, {
+          verbose: true
+        });
 
         expect(consoleLogs.some((log) => log.includes("Processed"))).toBe(true);
         expect(consoleLogs.some((log) => log.includes("Skipped"))).toBe(true);
@@ -176,7 +192,10 @@ describe("Read File and Append Module", () => {
 
   describe("appendFileContentsStreaming", () => {
     test("should stream file contents efficiently", async () => {
-      const filePaths = [path.join(testDir, "small.txt"), path.join(testDir, "medium.txt")];
+      const filePaths = [
+        path.join(testDir, "small.txt"),
+        path.join(testDir, "medium.txt")
+      ];
 
       await appendFileContentsStreaming(filePaths, outputFile);
 
@@ -186,7 +205,10 @@ describe("Read File and Append Module", () => {
     });
 
     test("should handle streaming errors", async () => {
-      const filePaths = [path.join(testDir, "small.txt"), path.join(testDir, "nonexistent.txt")];
+      const filePaths = [
+        path.join(testDir, "small.txt"),
+        path.join(testDir, "nonexistent.txt")
+      ];
 
       await appendFileContentsStreaming(filePaths, outputFile);
 
@@ -202,7 +224,7 @@ describe("Read File and Append Module", () => {
         path.join(testDir, "small.txt"),
         path.join(testDir, "medium.txt"),
         path.join(testDir, "binary.bin"),
-        path.join(testDir, "image.png"),
+        path.join(testDir, "image.png")
       ];
 
       const stats = await getFileStats(filePaths);
@@ -225,7 +247,10 @@ describe("Read File and Append Module", () => {
     });
 
     test("should handle inaccessible files", async () => {
-      const filePaths = [path.join(testDir, "small.txt"), path.join(testDir, "nonexistent.txt")];
+      const filePaths = [
+        path.join(testDir, "small.txt"),
+        path.join(testDir, "nonexistent.txt")
+      ];
 
       const stats = await getFileStats(filePaths);
 
@@ -235,7 +260,8 @@ describe("Read File and Append Module", () => {
 
     test("should return correct size calculations", async () => {
       const filePaths = [path.join(testDir, "small.txt")];
-      const smallFileSize = (await fs.stat(path.join(testDir, "small.txt"))).size;
+      const smallFileSize = (await fs.stat(path.join(testDir, "small.txt")))
+        .size;
 
       const stats = await getFileStats(filePaths);
 

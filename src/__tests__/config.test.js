@@ -29,7 +29,11 @@ describe("Config Module", () => {
 
       expect(config.options.MAX_FILE_SIZE_MB).toBe(10);
       expect(config.options.TRUNCATE_SIZE_BYTES).toBe(2048 * 1024);
-      expect(config.options.OUTPUT_FORMATS).toEqual(["text", "json", "markdown"]);
+      expect(config.options.OUTPUT_FORMATS).toEqual([
+        "text",
+        "json",
+        "markdown"
+      ]);
       expect(config.maxFileSizeBytes).toBe(10 * 1024 * 1024);
     });
 
@@ -55,7 +59,7 @@ describe("Config Module", () => {
     test("should accept custom options in constructor", () => {
       const customOptions = {
         MAX_FILE_SIZE_MB: 5,
-        TRUNCATE_SIZE_BYTES: 1024 * 1024,
+        TRUNCATE_SIZE_BYTES: 1024 * 1024
       };
 
       const config = new Config(customOptions);
@@ -67,14 +71,18 @@ describe("Config Module", () => {
 
     test("should merge custom options with defaults", () => {
       const customOptions = {
-        MAX_FILE_SIZE_MB: 20,
+        MAX_FILE_SIZE_MB: 20
       };
 
       const config = new Config(customOptions);
 
       expect(config.options.MAX_FILE_SIZE_MB).toBe(20);
       expect(config.options.TRUNCATE_SIZE_BYTES).toBe(2048 * 1024); // Should keep default
-      expect(config.options.OUTPUT_FORMATS).toEqual(["text", "json", "markdown"]); // Should keep default
+      expect(config.options.OUTPUT_FORMATS).toEqual([
+        "text",
+        "json",
+        "markdown"
+      ]); // Should keep default
     });
   });
 
@@ -111,7 +119,7 @@ describe("Config Module", () => {
     test("should load configuration from file", async () => {
       const testConfig = {
         MAX_FILE_SIZE_MB: 25,
-        TRUNCATE_SIZE_BYTES: 512 * 1024,
+        TRUNCATE_SIZE_BYTES: 512 * 1024
       };
 
       await fs.writeFile(testConfigFile, JSON.stringify(testConfig, null, 2));

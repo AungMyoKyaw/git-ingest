@@ -6,13 +6,15 @@ import {
   ResourceLimitError,
   ErrorHandler,
   createErrorHandler,
-  setupGlobalErrorHandlers,
+  setupGlobalErrorHandlers
 } from "../error-handler.js";
 
 describe("Error Handler Module", () => {
   describe("Custom Error Classes", () => {
     test("GitIngestError should extend Error with details", () => {
-      const error = new GitIngestError("Test error", "TEST_CODE", { key: "value" });
+      const error = new GitIngestError("Test error", "TEST_CODE", {
+        key: "value"
+      });
 
       expect(error).toBeInstanceOf(Error);
       expect(error).toBeInstanceOf(GitIngestError);
@@ -24,7 +26,11 @@ describe("Error Handler Module", () => {
     test("DirectoryError should include path information", () => {
       const testPath = "/test/path";
       const originalError = new Error("Original error");
-      const error = new DirectoryError("Directory error", testPath, originalError);
+      const error = new DirectoryError(
+        "Directory error",
+        testPath,
+        originalError
+      );
 
       expect(error).toBeInstanceOf(GitIngestError);
       expect(error).toBeInstanceOf(DirectoryError);
@@ -36,7 +42,11 @@ describe("Error Handler Module", () => {
     test("FileProcessingError should include file path", () => {
       const filePath = "/test/file.txt";
       const originalError = new Error("File error");
-      const error = new FileProcessingError("Processing error", filePath, originalError);
+      const error = new FileProcessingError(
+        "Processing error",
+        filePath,
+        originalError
+      );
 
       expect(error).toBeInstanceOf(GitIngestError);
       expect(error).toBeInstanceOf(FileProcessingError);
@@ -46,7 +56,11 @@ describe("Error Handler Module", () => {
     });
 
     test("ConfigurationError should include option and value", () => {
-      const error = new ConfigurationError("Config error", "maxSize", "invalid");
+      const error = new ConfigurationError(
+        "Config error",
+        "maxSize",
+        "invalid"
+      );
 
       expect(error).toBeInstanceOf(GitIngestError);
       expect(error).toBeInstanceOf(ConfigurationError);
@@ -56,7 +70,12 @@ describe("Error Handler Module", () => {
     });
 
     test("ResourceLimitError should include resource and limits", () => {
-      const error = new ResourceLimitError("Memory limit exceeded", "memory", 1000, 1500);
+      const error = new ResourceLimitError(
+        "Memory limit exceeded",
+        "memory",
+        1000,
+        1500
+      );
 
       expect(error).toBeInstanceOf(GitIngestError);
       expect(error).toBeInstanceOf(ResourceLimitError);
@@ -147,7 +166,10 @@ describe("Error Handler Module", () => {
         throw new Error("File error");
       };
 
-      const wrappedOperation = handler.safeFileOperation(failingOperation, "/test/file");
+      const wrappedOperation = handler.safeFileOperation(
+        failingOperation,
+        "/test/file"
+      );
 
       await expect(wrappedOperation()).rejects.toThrow(FileProcessingError);
     });
@@ -157,7 +179,10 @@ describe("Error Handler Module", () => {
         throw new Error("Directory error");
       };
 
-      const wrappedOperation = handler.safeDirectoryOperation(failingOperation, "/test/dir");
+      const wrappedOperation = handler.safeDirectoryOperation(
+        failingOperation,
+        "/test/dir"
+      );
 
       await expect(wrappedOperation()).rejects.toThrow(DirectoryError);
     });

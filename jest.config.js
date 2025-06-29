@@ -1,7 +1,11 @@
 export default {
   testEnvironment: "node",
   transform: {},
-  collectCoverageFrom: ["src/**/*.js", "!src/**/*.test.js", "!src/**/*.spec.js"],
+  collectCoverageFrom: [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/**/*.spec.js"
+  ],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
   testMatch: ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"],
@@ -12,11 +16,11 @@ export default {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80,
-    },
+      statements: 80
+    }
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   // Ensure proper cleanup
   forceExit: false,
-  detectOpenHandles: true,
+  detectOpenHandles: true
 };

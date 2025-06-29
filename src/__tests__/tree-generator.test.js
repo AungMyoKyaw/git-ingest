@@ -5,7 +5,7 @@ import {
   getAllFilePaths,
   saveTreeToFile,
   displayTreeWithGitignore,
-  shouldSkipForContent,
+  shouldSkipForContent
 } from "../tree-generator.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,16 +25,28 @@ describe("Tree Generator", () => {
     await fs.mkdir(path.join(testDir, ".git"), { recursive: true });
 
     // Create test files
-    await fs.writeFile(path.join(testDir, "README.md"), "# Test Project\n\nThis is a test.");
-    await fs.writeFile(path.join(testDir, "package.json"), '{\n  "name": "test"\n}');
-    await fs.writeFile(path.join(testDir, "src", "index.js"), 'console.log("Hello World");');
+    await fs.writeFile(
+      path.join(testDir, "README.md"),
+      "# Test Project\n\nThis is a test."
+    );
+    await fs.writeFile(
+      path.join(testDir, "package.json"),
+      '{\n  "name": "test"\n}'
+    );
+    await fs.writeFile(
+      path.join(testDir, "src", "index.js"),
+      'console.log("Hello World");'
+    );
     await fs.writeFile(
       path.join(testDir, "src", "utils", "helper.js"),
       "export const help = () => {};"
     );
 
     // Create files that should be ignored
-    await fs.writeFile(path.join(testDir, "node_modules", "module.js"), "module.exports = {};");
+    await fs.writeFile(
+      path.join(testDir, "node_modules", "module.js"),
+      "module.exports = {};"
+    );
     await fs.writeFile(path.join(testDir, "dist", "bundle.js"), "bundled code");
     await fs.writeFile(path.join(testDir, ".git", "config"), "git config");
     await fs.writeFile(path.join(testDir, ".DS_Store"), "mac file");
@@ -44,7 +56,9 @@ describe("Tree Generator", () => {
     await fs.writeFile(path.join(testDir, "binary.bin"), binaryData);
 
     // Create image file
-    const pngHeader = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    const pngHeader = Buffer.from([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a
+    ]);
     await fs.writeFile(path.join(testDir, "image.png"), pngHeader);
 
     // Create large file
@@ -52,7 +66,10 @@ describe("Tree Generator", () => {
     await fs.writeFile(path.join(testDir, "large.txt"), largeContent);
 
     // Create a .gitignore file
-    await fs.writeFile(path.join(testDir, ".gitignore"), "node_modules/\n*.log\ntemp/\n");
+    await fs.writeFile(
+      path.join(testDir, ".gitignore"),
+      "node_modules/\n*.log\ntemp/\n"
+    );
   });
 
   afterAll(async () => {
@@ -102,7 +119,9 @@ describe("Tree Generator", () => {
     });
 
     test("should handle include patterns", async () => {
-      const filePaths = await getAllFilePaths(testDir, { include: ["*.md", "*.json"] });
+      const filePaths = await getAllFilePaths(testDir, {
+        include: ["*.md", "*.json"]
+      });
       const fileNames = filePaths.map((fp) => path.basename(fp));
 
       expect(fileNames).toContain("README.md");
@@ -136,7 +155,9 @@ describe("Tree Generator", () => {
 
       try {
         await getAllFilePaths(testDir, { verbose: true });
-        expect(consoleLogs.some((log) => log.includes("Loaded .gitignore"))).toBe(true);
+        expect(
+          consoleLogs.some((log) => log.includes("Loaded .gitignore"))
+        ).toBe(true);
       } finally {
         console.log = originalLog;
       }
@@ -223,7 +244,9 @@ describe("Tree Generator", () => {
 
       const content = await fs.readFile(outputFile, "utf8");
       expect(content).toMatch(/Directory structure for: .*test-temp/);
-      expect(content).toMatch(/Generated on: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+      expect(content).toMatch(
+        /Generated on: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+      );
       expect(content).toMatch(/Total items: \d+/);
     });
 
@@ -234,7 +257,9 @@ describe("Tree Generator", () => {
 
       try {
         await saveTreeToFile(testDir, outputFile, { verbose: true });
-        expect(consoleLogs.some((log) => log.includes("Directory tree saved"))).toBe(true);
+        expect(
+          consoleLogs.some((log) => log.includes("Directory tree saved"))
+        ).toBe(true);
       } finally {
         console.log = originalLog;
       }
@@ -304,7 +329,9 @@ describe("Tree Generator", () => {
 
       try {
         // Test with non-existent directory
-        const result = await getAllFilePaths("/non/existent/path", { verbose: true });
+        const result = await getAllFilePaths("/non/existent/path", {
+          verbose: true
+        });
         expect(result).toEqual([]);
       } finally {
         console.warn = originalWarn;

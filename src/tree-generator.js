@@ -27,7 +27,9 @@ async function createIgnoreFilter(baseDir, options = {}) {
         }
       } catch (error) {
         if (options.verbose) {
-          console.warn(chalk.yellow(`⚠️  Could not read .gitignore: ${error.message}`));
+          console.warn(
+            chalk.yellow(`⚠️  Could not read .gitignore: ${error.message}`)
+          );
         }
       }
     }
@@ -72,7 +74,7 @@ function shouldSkipForContent(filePath, options = {}) {
     if (stats && stats.size > config.maxFileSizeBytes) {
       return {
         skip: true,
-        reason: `File too large (${config.formatFileSize(stats.size)})`,
+        reason: `File too large (${config.formatFileSize(stats.size)})`
       };
     }
 
@@ -90,7 +92,10 @@ function shouldSkipForContent(filePath, options = {}) {
 // Async directory tree generation with gitignore support
 async function displayTreeWithGitignore(dirPath, options = {}) {
   const output = [];
-  const { ignore: ignoreFilter, includeFilter } = await createIgnoreFilter(dirPath, options);
+  const { ignore: ignoreFilter, includeFilter } = await createIgnoreFilter(
+    dirPath,
+    options
+  );
 
   async function traverse(currentPath, depth = 0, prefix = "") {
     try {
@@ -109,11 +114,15 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
               name: item,
               fullPath,
               isDirectory: stats.isDirectory(),
-              size: stats.size,
+              size: stats.size
             });
           } catch (statError) {
             if (options.verbose) {
-              console.warn(chalk.yellow(`⚠️  Could not stat ${fullPath}: ${statError.message}`));
+              console.warn(
+                chalk.yellow(
+                  `⚠️  Could not stat ${fullPath}: ${statError.message}`
+                )
+              );
             }
           }
         }
@@ -138,7 +147,9 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
         // Add size info for large files
         let displayName = item.name;
         if (!item.isDirectory && item.size > 1024 * 1024) {
-          displayName += chalk.gray(` (${(item.size / 1024 / 1024).toFixed(1)}MB)`);
+          displayName += chalk.gray(
+            ` (${(item.size / 1024 / 1024).toFixed(1)}MB)`
+          );
         }
 
         output.push(`${prefix}${branch}${displayName}`);
@@ -150,7 +161,11 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
       }
     } catch (error) {
       if (options.verbose) {
-        console.warn(chalk.yellow(`⚠️  Could not read directory ${currentPath}: ${error.message}`));
+        console.warn(
+          chalk.yellow(
+            `⚠️  Could not read directory ${currentPath}: ${error.message}`
+          )
+        );
       }
       output.push(`${prefix}[Error reading directory: ${error.message}]`);
     }
@@ -163,7 +178,10 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
 // Async file path collection
 async function getAllFilePaths(dirPath, options = {}) {
   const filePaths = [];
-  const { ignore: ignoreFilter, includeFilter } = await createIgnoreFilter(dirPath, options);
+  const { ignore: ignoreFilter, includeFilter } = await createIgnoreFilter(
+    dirPath,
+    options
+  );
 
   async function traverse(currentPath) {
     try {
@@ -184,14 +202,22 @@ async function getAllFilePaths(dirPath, options = {}) {
             }
           } catch (statError) {
             if (options.verbose) {
-              console.warn(chalk.yellow(`⚠️  Could not stat ${fullPath}: ${statError.message}`));
+              console.warn(
+                chalk.yellow(
+                  `⚠️  Could not stat ${fullPath}: ${statError.message}`
+                )
+              );
             }
           }
         }
       }
     } catch (error) {
       if (options.verbose) {
-        console.warn(chalk.yellow(`⚠️  Could not read directory ${currentPath}: ${error.message}`));
+        console.warn(
+          chalk.yellow(
+            `⚠️  Could not read directory ${currentPath}: ${error.message}`
+          )
+        );
       }
     }
   }
@@ -210,7 +236,7 @@ async function saveTreeToFile(dirPath, fileName, options = {}) {
       `Directory structure for: ${path.resolve(dirPath)}`,
       `Generated on: ${new Date().toISOString()}`,
       `Total items: ${output.length}`,
-      "",
+      ""
     ];
 
     const content = [...header, ...output, "", ""].join("\n");
@@ -225,4 +251,9 @@ async function saveTreeToFile(dirPath, fileName, options = {}) {
   }
 }
 
-export { displayTreeWithGitignore, saveTreeToFile, getAllFilePaths, shouldSkipForContent };
+export {
+  displayTreeWithGitignore,
+  saveTreeToFile,
+  getAllFilePaths,
+  shouldSkipForContent
+};

@@ -105,7 +105,7 @@ export const DEFAULT_CONFIG = {
     "nyc_output/",
     ".eslintcache",
     "*.tsbuildinfo",
-    ".parcel-cache/",
+    ".parcel-cache/"
   ],
 
   // Output formats
@@ -166,8 +166,8 @@ export const DEFAULT_CONFIG = {
     ".dockerfile",
     ".gitignore",
     ".gitattributes",
-    ".editorconfig",
-  ],
+    ".editorconfig"
+  ]
 };
 
 /**
@@ -180,7 +180,8 @@ export class Config {
 
     // Derived configurations
     this.maxFileSizeBytes = this.options.MAX_FILE_SIZE_MB * 1024 * 1024;
-    this.largeFileThresholdBytes = this.options.LARGE_FILE_THRESHOLD_MB * 1024 * 1024;
+    this.largeFileThresholdBytes =
+      this.options.LARGE_FILE_THRESHOLD_MB * 1024 * 1024;
     this.memoryLimitBytes = this.options.MEMORY_LIMIT_MB * 1024 * 1024;
 
     // Validate configuration
@@ -191,7 +192,10 @@ export class Config {
    * Validate configuration values
    */
   validate() {
-    if (typeof this.options.MAX_FILE_SIZE_MB !== "number" || this.options.MAX_FILE_SIZE_MB <= 0) {
+    if (
+      typeof this.options.MAX_FILE_SIZE_MB !== "number" ||
+      this.options.MAX_FILE_SIZE_MB <= 0
+    ) {
       throw new Error("MAX_FILE_SIZE_MB must be a positive number");
     }
 
@@ -254,7 +258,7 @@ export class Config {
       exceedsLimit: sizeBytes > this.maxFileSizeBytes,
       isLarge: sizeBytes > this.largeFileThresholdBytes,
       sizeMB: sizeBytes / (1024 * 1024),
-      formattedSize: this.formatFileSize(sizeBytes),
+      formattedSize: this.formatFileSize(sizeBytes)
     };
   }
 
@@ -283,7 +287,9 @@ export class Config {
       const configData = JSON.parse(content);
       return new Config(configData);
     } catch (error) {
-      throw new Error(`Failed to load configuration from ${configPath}: ${error.message}`);
+      throw new Error(
+        `Failed to load configuration from ${configPath}: ${error.message}`
+      );
     }
   }
 
@@ -296,7 +302,9 @@ export class Config {
       const content = JSON.stringify(this.options, null, 2);
       await fs.writeFile(configPath, content, "utf8");
     } catch (error) {
-      throw new Error(`Failed to save configuration to ${configPath}: ${error.message}`);
+      throw new Error(
+        `Failed to save configuration to ${configPath}: ${error.message}`
+      );
     }
   }
 

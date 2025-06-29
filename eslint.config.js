@@ -9,8 +9,8 @@ export default [
       sourceType: "module",
       globals: {
         ...globals.node,
-        ...globals.es2022,
-      },
+        ...globals.es2022
+      }
     },
     rules: {
       indent: ["error", 2],
@@ -28,18 +28,18 @@ export default [
       "arrow-spacing": "error",
       "no-duplicate-imports": "error",
       "no-useless-rename": "error",
-      "rest-spread-spacing": "error",
-    },
+      "rest-spread-spacing": "error"
+    }
   },
   {
     files: ["**/*.test.js", "**/*.spec.js"],
     languageOptions: {
       globals: {
-        ...globals.jest,
-      },
+        ...globals.jest
+      }
     },
     rules: {
-      "no-unused-expressions": "off",
-    },
-  },
+      "no-unused-expressions": "off"
+    }
+  }
 ];

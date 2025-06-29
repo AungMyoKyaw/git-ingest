@@ -22,7 +22,7 @@ export class ProgressReporter {
       errors: 0,
       totalBytes: 0,
       totalFiles: 0,
-      estimatedTotalBytes: 0,
+      estimatedTotalBytes: 0
     };
   }
 
@@ -125,7 +125,8 @@ export class ProgressReporter {
 
     // Update spinner with current progress
     if (this.stats.totalFiles > 0) {
-      const completed = this.stats.filesProcessed + this.stats.filesSkipped + this.stats.errors;
+      const completed =
+        this.stats.filesProcessed + this.stats.filesSkipped + this.stats.errors;
       this.update("Processing files...", completed, this.stats.totalFiles);
     }
   }
@@ -140,22 +141,30 @@ export class ProgressReporter {
     const durationFormatted = this.formatDuration(duration);
 
     console.log(chalk.green("\n📊 Processing Summary:"));
-    console.log(chalk.green(`   ✅ Processed: ${this.stats.filesProcessed} files`));
+    console.log(
+      chalk.green(`   ✅ Processed: ${this.stats.filesProcessed} files`)
+    );
 
     if (this.stats.filesSkipped > 0) {
-      console.log(chalk.yellow(`   ⏭️  Skipped: ${this.stats.filesSkipped} files`));
+      console.log(
+        chalk.yellow(`   ⏭️  Skipped: ${this.stats.filesSkipped} files`)
+      );
     }
 
     if (this.stats.errors > 0) {
       console.log(chalk.red(`   ❌ Errors: ${this.stats.errors} files`));
     }
 
-    console.log(chalk.blue(`   📁 Total size: ${this.formatBytes(this.stats.totalBytes)}`));
+    console.log(
+      chalk.blue(`   📁 Total size: ${this.formatBytes(this.stats.totalBytes)}`)
+    );
     console.log(chalk.blue(`   ⏱️  Duration: ${durationFormatted}`));
 
     if (this.stats.totalBytes > 0 && duration > 0) {
       const throughput = this.stats.totalBytes / (duration / 1000);
-      console.log(chalk.blue(`   🚀 Throughput: ${this.formatBytes(throughput)}/s`));
+      console.log(
+        chalk.blue(`   🚀 Throughput: ${this.formatBytes(throughput)}/s`)
+      );
     }
   }
 
@@ -191,7 +200,8 @@ export class ProgressReporter {
    * Get estimated time remaining for processing
    */
   getEstimatedTimeRemaining(totalFiles) {
-    const completed = this.stats.filesProcessed + this.stats.filesSkipped + this.stats.errors;
+    const completed =
+      this.stats.filesProcessed + this.stats.filesSkipped + this.stats.errors;
     if (completed === 0) return 0;
 
     // Use stats.startTime instead of this.startTime for consistent timing
@@ -219,7 +229,8 @@ export class ProgressReporter {
   formatDuration(ms) {
     if (ms < 1000) return `${Math.round(ms)}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-    if (ms < 3600000) return `${Math.round(ms / 60000)}m ${Math.round((ms % 60000) / 1000)}s`;
+    if (ms < 3600000)
+      return `${Math.round(ms / 60000)}m ${Math.round((ms % 60000) / 1000)}s`;
 
     const hours = Math.floor(ms / 3600000);
     const minutes = Math.floor((ms % 3600000) / 60000);
@@ -330,7 +341,7 @@ export class ProgressReporter {
       errors: 0,
       totalBytes: 0,
       totalFiles: 0,
-      estimatedTotalBytes: 0,
+      estimatedTotalBytes: 0
     };
     this.startTime = null;
   }

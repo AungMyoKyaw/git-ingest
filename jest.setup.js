@@ -6,7 +6,7 @@ process.env.NODE_ENV = "test";
 
 // Mock console methods in tests to reduce noise
 global.console = {
-  ...console,
+  ...console
   // Uncomment to ignore console.log statements in tests
   // log: jest.fn(),
   // warn: jest.fn(),

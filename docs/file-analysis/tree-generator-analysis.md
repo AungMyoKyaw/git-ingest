@@ -44,7 +44,13 @@ function parseGitignore(gitignorePath) {
 #### Tree Generation
 
 ```javascript
-function displayTreeWithGitignore(dirPath, depth = 0, prefix = "", rules = null, output = []) {
+function displayTreeWithGitignore(
+  dirPath,
+  depth = 0,
+  prefix = "",
+  rules = null,
+  output = []
+) {
   // Recursive tree building...
 }
 ```

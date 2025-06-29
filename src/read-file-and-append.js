@@ -51,7 +51,11 @@ async function readFileWithTruncation(filePath, config = null) {
 }
 
 // Stream-based file content appending for memory efficiency
-async function appendFileContentsToTree(filePaths, outputFilePath, options = {}) {
+async function appendFileContentsToTree(
+  filePaths,
+  outputFilePath,
+  options = {}
+) {
   if (!Array.isArray(filePaths) || filePaths.length === 0) {
     if (options.verbose) {
       console.log(chalk.yellow("📝 No files to process"));
@@ -75,7 +79,10 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
 
   try {
     // Create write stream for efficient appending
-    const writeStream = createWriteStream(outputFilePath, { flags: "a", encoding: "utf8" });
+    const writeStream = createWriteStream(outputFilePath, {
+      flags: "a",
+      encoding: "utf8"
+    });
 
     for (const filePath of filePaths) {
       try {
@@ -194,7 +201,11 @@ async function appendFileContentsToTree(filePaths, outputFilePath, options = {})
 }
 
 // Alternative streaming implementation for very large projects
-async function appendFileContentsStreaming(filePaths, outputFilePath, options = {}) {
+async function appendFileContentsStreaming(
+  filePaths,
+  outputFilePath,
+  options = {}
+) {
   const writeStream = createWriteStream(outputFilePath, { flags: "a" });
 
   try {
@@ -267,7 +278,7 @@ async function getFileStats(filePaths, options = {}) {
     binaryFiles,
     largeFiles,
     totalSizeBytes: totalSize,
-    totalSizeMB: totalSize / (1024 * 1024),
+    totalSizeMB: totalSize / (1024 * 1024)
   };
 }
 

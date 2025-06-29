@@ -1,4 +1,7 @@
-import { ProgressReporter, createProgressReporter } from "../progress-reporter.js";
+import {
+  ProgressReporter,
+  createProgressReporter
+} from "../progress-reporter.js";
 
 describe("Progress Reporter Module", () => {
   describe("ProgressReporter Class", () => {

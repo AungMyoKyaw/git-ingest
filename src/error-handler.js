@@ -25,7 +25,7 @@ export class GitIngestError extends Error {
       code: this.code,
       details: this.details,
       timestamp: this.timestamp,
-      stack: this.stack,
+      stack: this.stack
     };
   }
 }
@@ -35,7 +35,10 @@ export class GitIngestError extends Error {
  */
 export class DirectoryError extends GitIngestError {
   constructor(message, path, originalError = null) {
-    super(message, "DIRECTORY_ERROR", { path, originalError: originalError?.message });
+    super(message, "DIRECTORY_ERROR", {
+      path,
+      originalError: originalError?.message
+    });
     this.name = "DirectoryError";
     this.path = path;
     this.originalError = originalError;
@@ -47,7 +50,10 @@ export class DirectoryError extends GitIngestError {
  */
 export class FileProcessingError extends GitIngestError {
   constructor(message, filePath, originalError = null) {
-    super(message, "FILE_PROCESSING_ERROR", { filePath, originalError: originalError?.message });
+    super(message, "FILE_PROCESSING_ERROR", {
+      filePath,
+      originalError: originalError?.message
+    });
     this.name = "FileProcessingError";
     this.filePath = filePath;
     this.originalError = originalError;
@@ -138,10 +144,14 @@ export class ErrorHandler {
       suggestions.push("Verify the directory path exists and is accessible");
       suggestions.push("Check file system permissions");
       if (error.path) {
-        suggestions.push(`Try using an absolute path: ${path.resolve(error.path)}`);
+        suggestions.push(
+          `Try using an absolute path: ${path.resolve(error.path)}`
+        );
       }
     } else if (error instanceof FileProcessingError) {
-      suggestions.push("Check if the file is corrupted or in use by another process");
+      suggestions.push(
+        "Check if the file is corrupted or in use by another process"
+      );
       suggestions.push("Verify file permissions");
       if (error.filePath) {
         suggestions.push(
@@ -152,7 +162,9 @@ export class ErrorHandler {
       suggestions.push("Review the command line options");
       suggestions.push("Check the configuration file syntax if using --config");
       if (error.option && error.value) {
-        suggestions.push(`Invalid value "${error.value}" for option "${error.option}"`);
+        suggestions.push(
+          `Invalid value "${error.value}" for option "${error.option}"`
+        );
       }
     } else if (error instanceof ResourceLimitError) {
       suggestions.push(`Consider increasing the ${error.resource} limit`);
@@ -173,7 +185,9 @@ export class ErrorHandler {
           break;
         case "EMFILE":
         case "ENFILE":
-          suggestions.push("Too many open files - try processing smaller directories");
+          suggestions.push(
+            "Too many open files - try processing smaller directories"
+          );
           suggestions.push("Increase system file descriptor limits");
           break;
         case "ENOSPC":
@@ -205,10 +219,14 @@ export class ErrorHandler {
     try {
       return await fn();
     } catch (error) {
-      throw new GitIngestError(`Failed to ${context}: ${error.message}`, "WRAPPED_ERROR", {
-        context,
-        originalError: error.message,
-      });
+      throw new GitIngestError(
+        `Failed to ${context}: ${error.message}`,
+        "WRAPPED_ERROR",
+        {
+          context,
+          originalError: error.message
+        }
+      );
     }
   }
 
@@ -220,10 +238,14 @@ export class ErrorHandler {
       try {
         return await fn(...args);
       } catch (error) {
-        throw new GitIngestError(`Failed to ${context}: ${error.message}`, "WRAPPED_ERROR", {
-          context,
-          originalError: error.message,
-        });
+        throw new GitIngestError(
+          `Failed to ${context}: ${error.message}`,
+          "WRAPPED_ERROR",
+          {
+            context,
+            originalError: error.message
+          }
+        );
       }
     };
   }
@@ -236,7 +258,11 @@ export class ErrorHandler {
       try {
         return await operation(...args);
       } catch (error) {
-        throw new FileProcessingError(`Failed to process file: ${error.message}`, filePath, error);
+        throw new FileProcessingError(
+          `Failed to process file: ${error.message}`,
+          filePath,
+          error
+        );
       }
     };
   }
@@ -249,7 +275,11 @@ export class ErrorHandler {
       try {
         return await operation(...args);
       } catch (error) {
-        throw new DirectoryError(`Failed to access directory: ${error.message}`, dirPath, error);
+        throw new DirectoryError(
+          `Failed to access directory: ${error.message}`,
+          dirPath,
+          error
+        );
       }
     };
   }

@@ -14,12 +14,18 @@ describe("CLI Module", () => {
     // Create test directory structure
     await fs.mkdir(testDir, { recursive: true });
     await fs.mkdir(path.join(testDir, "src"), { recursive: true });
-    await fs.writeFile(path.join(testDir, "README.md"), "# Test Project\n\nThis is a test.");
+    await fs.writeFile(
+      path.join(testDir, "README.md"),
+      "# Test Project\n\nThis is a test."
+    );
     await fs.writeFile(
       path.join(testDir, "package.json"),
       JSON.stringify({ name: "test-project", version: "1.0.0" }, null, 2)
     );
-    await fs.writeFile(path.join(testDir, "src", "index.js"), 'console.log("Hello World");');
+    await fs.writeFile(
+      path.join(testDir, "src", "index.js"),
+      'console.log("Hello World");'
+    );
   });
 
   afterAll(async () => {
@@ -50,7 +56,7 @@ describe("CLI Module", () => {
       const child = spawn("node", [cliPath, ...args], {
         stdio: "pipe",
         cwd: options.cwd || testDir,
-        env: { ...process.env, NODE_ENV: "test" },
+        env: { ...process.env, NODE_ENV: "test" }
       });
 
       let stdout = "";

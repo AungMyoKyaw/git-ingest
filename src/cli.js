@@ -8,7 +8,11 @@ import path from "path";
 import { saveTreeToFile, getAllFilePaths } from "./tree-generator.js";
 import { appendFileContentsToTree } from "./read-file-and-append.js";
 import { Config } from "./config.js";
-import { createErrorHandler, setupGlobalErrorHandlers, DirectoryError } from "./error-handler.js";
+import {
+  createErrorHandler,
+  setupGlobalErrorHandlers,
+  DirectoryError
+} from "./error-handler.js";
 import { createProgressReporter } from "./progress-reporter.js";
 
 // Version from package.json
@@ -36,7 +40,7 @@ class GitIngestApp {
     // Create error handler
     this.errorHandler = createErrorHandler({
       verbose: options.verbose,
-      quiet: options.quiet,
+      quiet: options.quiet
     });
 
     // Setup global error handlers
@@ -45,7 +49,7 @@ class GitIngestApp {
     // Create progress reporter
     this.progress = createProgressReporter({
       verbose: options.verbose,
-      quiet: options.quiet,
+      quiet: options.quiet
     });
   }
 
@@ -94,7 +98,11 @@ class GitIngestApp {
       return resolvedPath;
     } catch (error) {
       if (error.code === "ENOENT") {
-        throw new DirectoryError(`Directory '${dirPath}' does not exist`, dirPath, error);
+        throw new DirectoryError(
+          `Directory '${dirPath}' does not exist`,
+          dirPath,
+          error
+        );
       }
       if (error.code === "EACCES") {
         throw new DirectoryError(
@@ -165,12 +173,18 @@ class GitIngestApp {
 
       // Generate directory tree
       this.progress.start("Generating directory tree...");
-      await saveTreeToFile(targetDir, fileName, { ...options, config: this.config });
+      await saveTreeToFile(targetDir, fileName, {
+        ...options,
+        config: this.config
+      });
       this.progress.succeed("Directory tree generated");
 
       // Get file paths and process content
       this.progress.start("Discovering files...");
-      const filePaths = await getAllFilePaths(targetDir, { ...options, config: this.config });
+      const filePaths = await getAllFilePaths(targetDir, {
+        ...options,
+        config: this.config
+      });
       this.progress.succeed(`Found ${chalk.yellow(filePaths.length)} files`);
 
       // Append file contents with enhanced progress tracking
@@ -178,7 +192,7 @@ class GitIngestApp {
       await appendFileContentsToTree(filePaths, fileName, {
         ...options,
         config: this.config,
-        progress: this.progress,
+        progress: this.progress
       });
       this.progress.succeed("File contents processed");
 
@@ -207,8 +221,12 @@ class GitIngestApp {
       this.progress.succeed("Content copied to clipboard");
     } catch (clipError) {
       this.progress.fail("Failed to copy to clipboard");
-      this.errorHandler.warn(`Clipboard operation failed: ${clipError.message}`);
-      this.errorHandler.info("Try installing clipboard tools for your platform:");
+      this.errorHandler.warn(
+        `Clipboard operation failed: ${clipError.message}`
+      );
+      this.errorHandler.info(
+        "Try installing clipboard tools for your platform:"
+      );
       this.errorHandler.info("  macOS: pbcopy (built-in)");
       this.errorHandler.info("  Linux: xclip or xsel");
       this.errorHandler.info("  Windows: clip (built-in)");
@@ -245,7 +263,9 @@ const app = new GitIngestApp();
 
 program
   .name("git-ingest")
-  .description("A powerful CLI tool for analyzing and ingesting project codebases")
+  .description(
+    "A powerful CLI tool for analyzing and ingesting project codebases"
+  )
   .version(packageJson.version)
   .argument("[directory]", "Target directory to analyze", "./")
   .option("-o, --output <filename>", "Specify output filename")
