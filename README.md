@@ -81,12 +81,6 @@ git-ingest --exclude "*.test.js" "*.spec.js"
 
 # Set maximum file size (in MB)
 git-ingest --max-size 5
-
-# JSON output format
-git-ingest --format json
-
-# Markdown output format
-git-ingest --format markdown
 ```
 
 ### All Options
@@ -101,11 +95,9 @@ Options:
   -V, --version                output the version number
   -o, --output <filename>      Specify output filename
   -c, --copy                   Copy output to clipboard
-  -f, --format <type>          Output format (text, json, markdown) (default: "text")
   -i, --include <patterns...>  Include files matching patterns
   -e, --exclude <patterns...>  Exclude files matching patterns
   --max-size <size>            Maximum file size to include (in MB) (default: "10")
-  --config <file>              Use configuration file
   -v, --verbose                Verbose output
   -q, --quiet                  Quiet mode
   -h, --help                   display help for command

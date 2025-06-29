@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import clipboardy from "clipboardy";
 import chalk from "chalk";
 import fs from "fs/promises";
@@ -20,6 +20,38 @@ import { createProgressReporter } from "./progress-reporter.js";
 const packageJson = JSON.parse(
   await fs.readFile(new URL("../package.json", import.meta.url), "utf-8")
 );
+
+/**
+ * Check for deprecated options and show warnings
+ */
+function checkDeprecatedOptions() {
+  const warnings = [];
+
+  // Check if user explicitly provided these options (not just default values)
+  const formatProvided =
+    process.argv.includes("--format") || process.argv.includes("-f");
+  const configProvided = process.argv.includes("--config");
+
+  if (formatProvided) {
+    warnings.push(
+      "⚠️  Warning: The --format option has been deprecated and removed.",
+      "   All output is now generated in text format.",
+      "   This option will be ignored."
+    );
+  }
+
+  if (configProvided) {
+    warnings.push(
+      "⚠️  Warning: The --config option has been deprecated and removed.",
+      "   Configuration is now handled internally with sensible defaults.",
+      "   This option will be ignored."
+    );
+  }
+
+  if (warnings.length > 0) {
+    console.log(chalk.yellow(`\n${warnings.join("\n")}\n`));
+  }
+}
 
 /**
  * Main application class
@@ -58,17 +90,7 @@ class GitIngestApp {
    * Create configuration from options
    */
   async createConfig(options) {
-    let config = new Config();
-
-    // Load from config file if specified
-    if (options.config) {
-      try {
-        config = await Config.loadFromFile(options.config);
-        this.progress?.verbose(`Loaded configuration from ${options.config}`);
-      } catch (error) {
-        this.errorHandler?.warn(`Could not load config file: ${error.message}`);
-      }
-    }
+    const config = new Config();
 
     // Override with command line options
     const overrides = {};
@@ -130,14 +152,6 @@ class GitIngestApp {
         options.maxSize
       );
     }
-
-    // Validate format
-    this.errorHandler.validateConfig(
-      this.config.options.OUTPUT_FORMATS.includes(options.format),
-      `Invalid format '${options.format}'. Valid formats: ${this.config.options.OUTPUT_FORMATS.join(", ")}`,
-      "format",
-      options.format
-    );
   }
 
   /**
@@ -149,8 +163,7 @@ class GitIngestApp {
     }
 
     const timestamp = Math.floor(Date.now() / 1000);
-    const extension = options.format === "json" ? "json" : "txt";
-    return `git-ingest-${timestamp}.${extension}`;
+    return `git-ingest-${timestamp}.txt`;
   } /**
    * Process directory and generate output
    */
@@ -271,15 +284,19 @@ program
   .argument("[directory]", "Target directory to analyze", "./")
   .option("-o, --output <filename>", "Specify output filename")
   .option("-c, --copy", "Copy output to clipboard")
-  .option("-f, --format <type>", "Output format (text, json, markdown)", "text")
   .option("-i, --include <patterns...>", "Include files matching patterns")
   .option("-e, --exclude <patterns...>", "Exclude files matching patterns")
   .option("--max-size <size>", "Maximum file size to include (in MB)", "10")
-  .option("--config <file>", "Use configuration file")
   .option("-v, --verbose", "Verbose output")
   .option("-q, --quiet", "Quiet mode")
+  // Hidden deprecated options for backward compatibility warnings
+  .addOption(new Option("-f, --format <type>").default("text").hideHelp())
+  .addOption(new Option("--config <file>").hideHelp())
   .action(async (directory, options) => {
     try {
+      // Check for deprecated options and show warnings
+      checkDeprecatedOptions();
+
       await app.processDirectory(directory, options);
     } catch {
       // Error already handled by app.processDirectory

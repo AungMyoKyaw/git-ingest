@@ -1,39 +1,12 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
 import { Config } from "../config.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 describe("Config Module", () => {
-  const testDir = path.join(__dirname, "config-test-temp");
-  let testConfigFile;
-
-  beforeAll(async () => {
-    await fs.mkdir(testDir, { recursive: true });
-    testConfigFile = path.join(testDir, "test-config.json");
-  });
-
-  afterAll(async () => {
-    try {
-      await fs.rm(testDir, { recursive: true, force: true });
-    } catch {
-      // Ignore cleanup errors
-    }
-  });
-
   describe("Default Configuration", () => {
     test("should create default config with correct values", () => {
       const config = new Config();
 
       expect(config.options.MAX_FILE_SIZE_MB).toBe(10);
       expect(config.options.TRUNCATE_SIZE_BYTES).toBe(2048 * 1024);
-      expect(config.options.OUTPUT_FORMATS).toEqual([
-        "text",
-        "json",
-        "markdown"
-      ]);
       expect(config.maxFileSizeBytes).toBe(10 * 1024 * 1024);
     });
 
@@ -78,11 +51,6 @@ describe("Config Module", () => {
 
       expect(config.options.MAX_FILE_SIZE_MB).toBe(20);
       expect(config.options.TRUNCATE_SIZE_BYTES).toBe(2048 * 1024); // Should keep default
-      expect(config.options.OUTPUT_FORMATS).toEqual([
-        "text",
-        "json",
-        "markdown"
-      ]); // Should keep default
     });
   });
 
@@ -96,52 +64,6 @@ describe("Config Module", () => {
     test("should validate truncate size", () => {
       expect(() => new Config({ TRUNCATE_SIZE_BYTES: -1 })).toThrow();
       expect(() => new Config({ TRUNCATE_SIZE_BYTES: "invalid" })).toThrow();
-    });
-
-    test("should validate output formats", () => {
-      expect(() => new Config({ OUTPUT_FORMATS: "invalid" })).toThrow();
-      expect(() => new Config({ OUTPUT_FORMATS: [] })).toThrow();
-    });
-  });
-
-  describe("File Operations", () => {
-    test("should save configuration to file", async () => {
-      const config = new Config({ MAX_FILE_SIZE_MB: 15 });
-
-      await config.saveToFile(testConfigFile);
-
-      const content = await fs.readFile(testConfigFile, "utf8");
-      const savedConfig = JSON.parse(content);
-
-      expect(savedConfig.MAX_FILE_SIZE_MB).toBe(15);
-    });
-
-    test("should load configuration from file", async () => {
-      const testConfig = {
-        MAX_FILE_SIZE_MB: 25,
-        TRUNCATE_SIZE_BYTES: 512 * 1024
-      };
-
-      await fs.writeFile(testConfigFile, JSON.stringify(testConfig, null, 2));
-
-      const config = await Config.loadFromFile(testConfigFile);
-
-      expect(config.options.MAX_FILE_SIZE_MB).toBe(25);
-      expect(config.options.TRUNCATE_SIZE_BYTES).toBe(512 * 1024);
-      expect(config.maxFileSizeBytes).toBe(25 * 1024 * 1024);
-    });
-
-    test("should handle missing config file", async () => {
-      const nonExistentFile = path.join(testDir, "missing.json");
-
-      await expect(Config.loadFromFile(nonExistentFile)).rejects.toThrow();
-    });
-
-    test("should handle invalid JSON in config file", async () => {
-      const invalidConfigFile = path.join(testDir, "invalid.json");
-      await fs.writeFile(invalidConfigFile, "{ invalid json }");
-
-      await expect(Config.loadFromFile(invalidConfigFile)).rejects.toThrow();
     });
   });
 

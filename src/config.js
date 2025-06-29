@@ -111,9 +111,6 @@ export const DEFAULT_CONFIG = {
     ".parcel-cache/"
   ],
 
-  // Output formats
-  OUTPUT_FORMATS: ["text", "json", "markdown"],
-
   // Default file extensions to treat as text
   TEXT_EXTENSIONS: [
     ".txt",
@@ -209,13 +206,6 @@ export class Config {
       throw new Error("TRUNCATE_SIZE_BYTES must be a non-negative number");
     }
 
-    if (
-      !Array.isArray(this.options.OUTPUT_FORMATS) ||
-      !this.options.OUTPUT_FORMATS.includes("text")
-    ) {
-      throw new Error('OUTPUT_FORMATS must be an array that includes "text"');
-    }
-
     if (this.options.SEPARATOR_LENGTH < 10) {
       throw new Error("SEPARATOR_LENGTH must be at least 10");
     }
@@ -277,37 +267,6 @@ export class Config {
       return `${(sizeBytes / (1024 * 1024)).toFixed(2)} MB`;
     } else {
       return `${(sizeBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-    }
-  }
-
-  /**
-   * Load configuration from file
-   */
-  static async loadFromFile(configPath) {
-    try {
-      const fs = await import("fs/promises");
-      const content = await fs.readFile(configPath, "utf8");
-      const configData = JSON.parse(content);
-      return new Config(configData);
-    } catch (error) {
-      throw new Error(
-        `Failed to load configuration from ${configPath}: ${error.message}`
-      );
-    }
-  }
-
-  /**
-   * Save configuration to file
-   */
-  async saveToFile(configPath) {
-    try {
-      const fs = await import("fs/promises");
-      const content = JSON.stringify(this.options, null, 2);
-      await fs.writeFile(configPath, content, "utf8");
-    } catch (error) {
-      throw new Error(
-        `Failed to save configuration to ${configPath}: ${error.message}`
-      );
     }
   }
 

@@ -155,12 +155,6 @@ describe("CLI Module", () => {
       expect(stderr).toContain("does not exist");
     });
 
-    test("should handle invalid format option", async () => {
-      const { code, stderr } = await runCLI([testDir, "--format", "invalid"]);
-      expect(code).toBe(1);
-      expect(stderr).toContain("Invalid format");
-    });
-
     test("should handle invalid max-size option", async () => {
       const { code, stderr } = await runCLI([testDir, "--max-size", "invalid"]);
       expect(code).toBe(1);
@@ -209,13 +203,31 @@ describe("CLI Module", () => {
       expect(content).toContain("too large");
     });
 
-    test("should handle JSON format", async () => {
-      const { code } = await runCLI([testDir, "--format", "json"]);
+    test("should show deprecation warning for format option", async () => {
+      const { code, stdout } = await runCLI([testDir, "--format", "json"]);
       expect(code).toBe(0);
+      expect(stdout).toContain(
+        "Warning: The --format option has been deprecated"
+      );
+      expect(stdout).toContain("All output is now generated in text format");
 
+      // Should still generate a .txt file, not .json
       const files = await fs.readdir(testDir);
-      const outputFile = files.find((f) => f.endsWith(".json"));
-      expect(outputFile).toBeDefined();
+      const outputFile = files.find((f) => f.startsWith("git-ingest-"));
+      expect(outputFile).toMatch(/\.txt$/);
+    });
+
+    test("should show deprecation warning for config option", async () => {
+      const { code, stdout } = await runCLI([
+        testDir,
+        "--config",
+        "some-file.json"
+      ]);
+      expect(code).toBe(0);
+      expect(stdout).toContain(
+        "Warning: The --config option has been deprecated"
+      );
+      expect(stdout).toContain("Configuration is now handled internally");
     });
   });
 });
