@@ -71,7 +71,7 @@ async function appendFileContentsToTree(
     config.maxFileSizeBytes = config.options.MAX_FILE_SIZE_MB * 1024 * 1024;
   }
 
-  const progress = options.progress;
+  const { progress } = options;
 
   let processedCount = 0;
   let skippedCount = 0;
@@ -244,6 +244,7 @@ async function getFileStats(filePaths, options = {}) {
     config = new Config();
     config.options.MAX_FILE_SIZE_MB = options.maxSize;
     config.maxFileSizeBytes = config.options.MAX_FILE_SIZE_MB * 1024 * 1024;
+    // eslint-disable-next-line no-param-reassign
     options = { ...options, config };
   }
 

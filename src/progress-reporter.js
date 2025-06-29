@@ -30,7 +30,7 @@ export class ProgressReporter {
    * Start a new progress operation
    */
   start(message, totalItems = null) {
-    if (this.quiet) return;
+    if (this.quiet) return null;
 
     this.startTime = Date.now();
     this.stats.totalFiles = totalItems || 0;
@@ -105,15 +105,19 @@ export class ProgressReporter {
     this.stats.totalBytes += sizeBytes;
 
     switch (status) {
-      case "processed":
-        this.stats.filesProcessed++;
-        break;
-      case "skipped":
-        this.stats.filesSkipped++;
-        break;
-      case "error":
-        this.stats.errors++;
-        break;
+    case "processed":
+      this.stats.filesProcessed++;
+      break;
+    case "skipped":
+      this.stats.filesSkipped++;
+      break;
+    case "error":
+      this.stats.errors++;
+      break;
+    default:
+      // Unknown status, treat as processed
+      this.stats.filesProcessed++;
+      break;
     }
 
     if (this.verbose) {
@@ -255,14 +259,14 @@ export class ProgressReporter {
    */
   getStatusIcon(status) {
     switch (status) {
-      case "processed":
-        return chalk.green("✅");
-      case "skipped":
-        return chalk.yellow("⏭️");
-      case "error":
-        return chalk.red("❌");
-      default:
-        return "ℹ️";
+    case "processed":
+      return chalk.green("✅");
+    case "skipped":
+      return chalk.yellow("⏭️");
+    case "error":
+      return chalk.red("❌");
+    default:
+      return "ℹ️";
     }
   }
 

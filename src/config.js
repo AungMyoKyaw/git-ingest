@@ -7,7 +7,10 @@
 export const DEFAULT_CONFIG = {
   // File processing
   MAX_FILE_SIZE_MB: 10,
-  TRUNCATE_SIZE_BYTES: 2048 * 1024, // 2MB
+  TRUNCATE_SIZE_KB: 2048,
+  get TRUNCATE_SIZE_BYTES() {
+    return this.TRUNCATE_SIZE_KB * 1024;
+  }, // 2MB
 
   // Output formatting
   SEPARATOR_LENGTH: 48,
@@ -210,7 +213,7 @@ export class Config {
       !Array.isArray(this.options.OUTPUT_FORMATS) ||
       !this.options.OUTPUT_FORMATS.includes("text")
     ) {
-      throw new Error('OUTPUT_FORMATS must be an array that includes "text"');
+      throw new Error("OUTPUT_FORMATS must be an array that includes \"text\"");
     }
 
     if (this.options.SEPARATOR_LENGTH < 10) {

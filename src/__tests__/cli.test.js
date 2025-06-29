@@ -24,7 +24,7 @@ describe("CLI Module", () => {
     );
     await fs.writeFile(
       path.join(testDir, "src", "index.js"),
-      'console.log("Hello World");'
+      "console.log(\"Hello World\");"
     );
   });
 

@@ -4,6 +4,7 @@ import { Command } from "commander";
 import clipboardy from "clipboardy";
 import chalk from "chalk";
 import fs from "fs/promises";
+import { constants as fsConstants } from "fs";
 import path from "path";
 import { saveTreeToFile, getAllFilePaths } from "./tree-generator.js";
 import { appendFileContentsToTree } from "./read-file-and-append.js";
@@ -94,7 +95,7 @@ class GitIngestApp {
       );
 
       // Check read permissions
-      await fs.access(resolvedPath, fs.constants.R_OK);
+      await fs.access(resolvedPath, fsConstants.R_OK);
       return resolvedPath;
     } catch (error) {
       if (error.code === "ENOENT") {
