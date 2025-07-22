@@ -10,7 +10,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "next": "15.4.2",
+    "next": "^15.4.2-canary.12",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
