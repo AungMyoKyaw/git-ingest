@@ -3,44 +3,76 @@ import { Github, Twitter, Linkedin, Mail, ExternalLink } from "lucide-react";
 
 const navigation = {
   product: [
-    { name: 'Features', href: '#features' },
-    { name: 'Installation', href: '#installation' },
-    { name: 'Performance', href: '#performance' },
-    { name: 'Security', href: '#security' }
+    { name: "Features", href: "#features" },
+    { name: "Installation", href: "#installation" },
+    { name: "Performance", href: "#performance" },
+    { name: "Security", href: "#security" }
   ],
   resources: [
-    { name: 'Documentation', href: 'https://github.com/AungMyoKyaw/git-ingest#readme', external: true },
-    { name: 'GitHub Repository', href: 'https://github.com/AungMyoKyaw/git-ingest', external: true },
-    { name: 'NPM Package', href: 'https://npmjs.com/package/git-ingest', external: true },
-    { name: 'Contributing Guide', href: 'https://github.com/AungMyoKyaw/git-ingest/blob/master/CONTRIBUTING.md', external: true }
+    {
+      name: "Documentation",
+      href: "https://github.com/AungMyoKyaw/git-ingest#readme",
+      external: true
+    },
+    {
+      name: "GitHub Repository",
+      href: "https://github.com/AungMyoKyaw/git-ingest",
+      external: true
+    },
+    {
+      name: "NPM Package",
+      href: "https://npmjs.com/package/git-ingest",
+      external: true
+    },
+    {
+      name: "Contributing Guide",
+      href: "https://github.com/AungMyoKyaw/git-ingest/blob/master/CONTRIBUTING.md",
+      external: true
+    }
   ],
   support: [
-    { name: 'Issues', href: 'https://github.com/AungMyoKyaw/git-ingest/issues', external: true },
-    { name: 'Discussions', href: 'https://github.com/AungMyoKyaw/git-ingest/discussions', external: true },
-    { name: 'Release Notes', href: 'https://github.com/AungMyoKyaw/git-ingest/releases', external: true },
-    { name: 'License', href: 'https://github.com/AungMyoKyaw/git-ingest/blob/master/LICENSE', external: true }
+    {
+      name: "Issues",
+      href: "https://github.com/AungMyoKyaw/git-ingest/issues",
+      external: true
+    },
+    {
+      name: "Discussions",
+      href: "https://github.com/AungMyoKyaw/git-ingest/discussions",
+      external: true
+    },
+    {
+      name: "Release Notes",
+      href: "https://github.com/AungMyoKyaw/git-ingest/releases",
+      external: true
+    },
+    {
+      name: "License",
+      href: "https://github.com/AungMyoKyaw/git-ingest/blob/master/LICENSE",
+      external: true
+    }
   ]
 };
 
 const socialLinks = [
   {
-    name: 'GitHub',
-    href: 'https://github.com/AungMyoKyaw',
+    name: "GitHub",
+    href: "https://github.com/AungMyoKyaw",
     icon: Github
   },
   {
-    name: 'Twitter',
-    href: 'https://twitter.com/AungMyoKyaw',
+    name: "Twitter",
+    href: "https://twitter.com/AungMyoKyaw",
     icon: Twitter
   },
   {
-    name: 'LinkedIn',
-    href: 'https://linkedin.com/in/aungmyokyaw',
+    name: "LinkedIn",
+    href: "https://linkedin.com/in/aungmyokyaw",
     icon: Linkedin
   },
   {
-    name: 'Email',
-    href: 'mailto:aungmyokyaw@example.com',
+    name: "Email",
+    href: "mailto:aungmyokyaw@example.com",
     icon: Mail
   }
 ];
@@ -59,8 +91,9 @@ export function Footer() {
               <span className="text-xl font-bold">Git-Ingest</span>
             </div>
             <p className="text-muted-foreground max-w-md leading-relaxed">
-              Transform any codebase into AI-ready format with advanced analysis, security, and performance.
-              The developer tool trusted by thousands worldwide.
+              Transform any codebase into AI-ready format with advanced
+              analysis, security, and performance. The developer tool trusted by
+              thousands worldwide.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((item) => {
@@ -83,7 +116,9 @@ export function Footer() {
 
           {/* Navigation Sections */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Product</h3>
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+              Product
+            </h3>
             <ul className="space-y-3">
               {navigation.product.map((item) => (
                 <li key={item.name}>
@@ -99,7 +134,9 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Resources</h3>
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+              Resources
+            </h3>
             <ul className="space-y-3">
               {navigation.resources.map((item) => (
                 <li key={item.name}>
@@ -118,7 +155,9 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Support</h3>
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+              Support
+            </h3>
             <ul className="space-y-3">
               {navigation.support.map((item) => (
                 <li key={item.name}>
@@ -144,10 +183,16 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-muted-foreground">
             <p>&copy; 2024 Git-Ingest. All rights reserved.</p>
             <div className="flex items-center space-x-4">
-              <a href="https://github.com/AungMyoKyaw/git-ingest/blob/master/PRIVACY.md" className="hover:text-primary transition-colors">
+              <a
+                href="https://github.com/AungMyoKyaw/git-ingest/blob/master/PRIVACY.md"
+                className="hover:text-primary transition-colors"
+              >
                 Privacy Policy
               </a>
-              <a href="https://github.com/AungMyoKyaw/git-ingest/blob/master/LICENSE" className="hover:text-primary transition-colors">
+              <a
+                href="https://github.com/AungMyoKyaw/git-ingest/blob/master/LICENSE"
+                className="hover:text-primary transition-colors"
+              >
                 Terms of Service
               </a>
             </div>
@@ -181,7 +226,9 @@ export function Footer() {
         <div className="mt-8 text-center">
           <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-lg px-4 py-2 ">
             <code className="text-sm font-mono">npm install -g git-ingest</code>
-            <span className="text-xs text-muted-foreground">• Start transforming codebases today</span>
+            <span className="text-xs text-muted-foreground">
+              • Start transforming codebases today
+            </span>
           </div>
         </div>
       </div>

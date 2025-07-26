@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Bot,
@@ -13,7 +19,8 @@ const useCases = [
   {
     icon: Bot,
     title: "AI Analysis",
-    description: "Perfect for feeding entire codebases to AI tools like ChatGPT, Claude, or GitHub Copilot for analysis, documentation, or refactoring suggestions.",
+    description:
+      "Perfect for feeding entire codebases to AI tools like ChatGPT, Claude, or GitHub Copilot for analysis, documentation, or refactoring suggestions.",
     examples: [
       "Code review automation",
       "Documentation generation",
@@ -26,7 +33,8 @@ const useCases = [
   {
     icon: MessageSquare,
     title: "Code Reviews",
-    description: "Generate comprehensive project overviews for code reviews, sharing complete project context in a single, structured document.",
+    description:
+      "Generate comprehensive project overviews for code reviews, sharing complete project context in a single, structured document.",
     examples: [
       "Pull request context",
       "Architecture reviews",
@@ -39,7 +47,8 @@ const useCases = [
   {
     icon: BookOpen,
     title: "Documentation",
-    description: "Create snapshot documentation of project structure and content for onboarding new team members or archival purposes.",
+    description:
+      "Create snapshot documentation of project structure and content for onboarding new team members or archival purposes.",
     examples: [
       "Onboarding guides",
       "Project snapshots",
@@ -52,7 +61,8 @@ const useCases = [
   {
     icon: RefreshCw,
     title: "Project Migration",
-    description: "Analyze and understand legacy codebases before migration or modernization efforts, getting complete visibility into existing systems.",
+    description:
+      "Analyze and understand legacy codebases before migration or modernization efforts, getting complete visibility into existing systems.",
     examples: [
       "Legacy assessment",
       "Modernization planning",
@@ -65,7 +75,8 @@ const useCases = [
   {
     icon: Users,
     title: "Team Collaboration",
-    description: "Share project context quickly with team members, stakeholders, or external consultants without complex setup or access requirements.",
+    description:
+      "Share project context quickly with team members, stakeholders, or external consultants without complex setup or access requirements.",
     examples: [
       "Stakeholder reports",
       "Consultant briefings",
@@ -78,7 +89,8 @@ const useCases = [
   {
     icon: FileSearch,
     title: "Quality Assurance",
-    description: "Comprehensive codebase analysis for quality assurance, identifying patterns, inconsistencies, and potential improvements across large projects.",
+    description:
+      "Comprehensive codebase analysis for quality assurance, identifying patterns, inconsistencies, and potential improvements across large projects.",
     examples: [
       "Code pattern analysis",
       "Consistency checking",
@@ -102,7 +114,8 @@ export function UseCasesSection() {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground">
-            From AI analysis to team collaboration, Git-Ingest transforms how you work with codebases.
+            From AI analysis to team collaboration, Git-Ingest transforms how
+            you work with codebases.
           </p>
         </div>
 
@@ -110,16 +123,26 @@ export function UseCasesSection() {
           {useCases.map((useCase) => {
             const IconComponent = useCase.icon;
             return (
-              <Card key={useCase.title} className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden relative">
+              <Card
+                key={useCase.title}
+                className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden relative"
+              >
                 {/* Gradient Background */}
-                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${useCase.gradient} opacity-60`} />
+                <div
+                  className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${useCase.gradient} opacity-60`}
+                />
 
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${useCase.gradient} opacity-10 group-hover:opacity-20 transition-opacity`}>
+                    <div
+                      className={`p-3 rounded-xl bg-gradient-to-br ${useCase.gradient} opacity-10 group-hover:opacity-20 transition-opacity`}
+                    >
                       <IconComponent className="w-7 h-7 text-foreground" />
                     </div>
-                    <Badge variant="outline" className="text-xs border-primary/30 bg-primary/5">
+                    <Badge
+                      variant="outline"
+                      className="text-xs border-primary/30 bg-primary/5"
+                    >
                       {useCase.badge}
                     </Badge>
                   </div>
@@ -139,8 +162,12 @@ export function UseCasesSection() {
                     <ul className="space-y-2">
                       {useCase.examples.map((example) => (
                         <li key={example} className="flex items-center text-sm">
-                          <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${useCase.gradient} mr-3 flex-shrink-0`} />
-                          <span className="text-muted-foreground">{example}</span>
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${useCase.gradient} mr-3 flex-shrink-0`}
+                          />
+                          <span className="text-muted-foreground">
+                            {example}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -160,21 +187,30 @@ export function UseCasesSection() {
                 <Bot className="w-8 h-8 text-white" />
               </div>
               <h4 className="text-xl font-bold">85% Faster Reviews</h4>
-              <p className="text-muted-foreground">Teams report significantly faster code reviews with complete context</p>
+              <p className="text-muted-foreground">
+                Teams report significantly faster code reviews with complete
+                context
+              </p>
             </div>
             <div className="text-center space-y-4">
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <h4 className="text-xl font-bold">50% Less Onboarding</h4>
-              <p className="text-muted-foreground">New developers get up to speed twice as fast with comprehensive docs</p>
+              <p className="text-muted-foreground">
+                New developers get up to speed twice as fast with comprehensive
+                docs
+              </p>
             </div>
             <div className="text-center space-y-4">
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                 <RefreshCw className="w-8 h-8 text-white" />
               </div>
               <h4 className="text-xl font-bold">90% Migration Success</h4>
-              <p className="text-muted-foreground">Higher success rate for legacy system migrations with complete analysis</p>
+              <p className="text-muted-foreground">
+                Higher success rate for legacy system migrations with complete
+                analysis
+              </p>
             </div>
           </div>
         </div>

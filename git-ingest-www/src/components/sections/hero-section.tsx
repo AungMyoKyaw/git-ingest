@@ -25,7 +25,10 @@ export function HeroSection() {
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Badge */}
           <div className="flex justify-center animate-fade-in">
-            <Badge variant="outline" className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5">
+            <Badge
+              variant="outline"
+              className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5"
+            >
               <Sparkles className="w-4 h-4 mr-2 text-primary" />
               Version 2.0 - Now with Enhanced Security & Performance
             </Badge>
@@ -42,8 +45,9 @@ export function HeroSection() {
             </h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              A powerful CLI tool that analyzes and ingests entire project codebases into structured text files.
-              Perfect for AI analysis, code reviews, and team collaboration.
+              A powerful CLI tool that analyzes and ingests entire project
+              codebases into structured text files. Perfect for AI analysis,
+              code reviews, and team collaboration.
             </p>
           </div>
 
@@ -51,14 +55,16 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-200">
             <div className="flex items-center gap-2 bg-card border rounded-lg p-3 min-w-[300px]">
               <Terminal className="w-5 h-5 text-muted-foreground" />
-              <code className="text-sm font-mono">npm install -g git-ingest</code>
+              <code className="text-sm font-mono">
+                npm install -g git-ingest
+              </code>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleCopy}
                 className="ml-auto h-8 w-8 p-0"
               >
-                <Copy className={`w-4 h-4 ${copied ? 'text-green-500' : ''}`} />
+                <Copy className={`w-4 h-4 ${copied ? "text-green-500" : ""}`} />
               </Button>
             </div>
           </div>
@@ -70,7 +76,11 @@ export function HeroSection() {
               Get Started Now
             </Button>
 
-            <Button variant="outline" size="lg" className="h-12 px-8 text-base font-medium">
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 px-8 text-base font-medium"
+            >
               <Github className="w-5 h-5 mr-2" />
               View on GitHub
             </Button>
@@ -80,15 +90,21 @@ export function HeroSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 animate-fade-in-up delay-400">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">10x</div>
-              <div className="text-sm text-muted-foreground">Faster than v1.0</div>
+              <div className="text-sm text-muted-foreground">
+                Faster than v1.0
+              </div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">&lt;60s</div>
-              <div className="text-sm text-muted-foreground">Process 10k files</div>
+              <div className="text-sm text-muted-foreground">
+                Process 10k files
+              </div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">100%</div>
-              <div className="text-sm text-muted-foreground">Security focused</div>
+              <div className="text-sm text-muted-foreground">
+                Security focused
+              </div>
             </div>
           </div>
         </div>

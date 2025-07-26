@@ -1,5 +1,23 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Code Style & Formatting
+
+This project enforces consistent code style using [EditorConfig](https://editorconfig.org/) and [Prettier](https://prettier.io/):
+
+- **Indentation:** 2 spaces, never tabs
+- **Trailing Commas:** Not used
+- **Other Prettier rules:** See `.prettierrc`
+
+To automatically format your code, run:
+
+```bash
+npm run format
+```
+
+This will format all files in the project using Prettier rules.
+
+---
+
 ## Getting Started
 
 First, run the development server:
