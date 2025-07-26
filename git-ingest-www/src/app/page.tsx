@@ -11,11 +11,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
-      <FeaturesSection />
-      <InstallationSection />
+      <FeaturesSection id="features" />
+      <InstallationSection id="installation" />
       <UseCasesSection />
-      <PerformanceSection />
-      <SecuritySection />
+      <PerformanceSection id="performance" />
+      <SecuritySection id="security" />
       <CTASection />
       <Footer />
     </div>

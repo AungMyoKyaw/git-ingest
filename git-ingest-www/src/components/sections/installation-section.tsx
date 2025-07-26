@@ -56,7 +56,7 @@ const usageExamples = [
   }
 ];
 
-export function InstallationSection() {
+export function InstallationSection({ id }: { id?: string }) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const handleCopy = async (text: string, index: number) => {
@@ -66,7 +66,7 @@ export function InstallationSection() {
   };
 
   return (
-    <section className="py-24 bg-background">
+    <section id={id} className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">

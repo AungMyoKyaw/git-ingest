@@ -77,9 +77,9 @@ const technicalFeatures = [
   "Interrupt Handling"
 ];
 
-export function PerformanceSection() {
+export function PerformanceSection({ id }: { id?: string }) {
   return (
-    <section className="py-24 bg-background">
+    <section id={id} className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
