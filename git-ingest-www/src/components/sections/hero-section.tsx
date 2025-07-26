@@ -71,19 +71,25 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-300">
-            <Button size="lg" className="h-12 px-8 text-base font-medium">
+            <a
+              href="https://github.com/AungMyoKyaw/git-ingest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center h-12 px-8 text-base font-medium bg-primary text-white rounded-md justify-center transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
               <Download className="w-5 h-5 mr-2" />
               Get Started Now
-            </Button>
+            </a>
 
-            <Button
-              variant="outline"
-              size="lg"
-              className="h-12 px-8 text-base font-medium"
+            <a
+              href="https://github.com/AungMyoKyaw/git-ingest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center h-12 px-8 text-base font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <Github className="w-5 h-5 mr-2" />
               View on GitHub
-            </Button>
+            </a>
           </div>
 
           {/* Key Stats */}

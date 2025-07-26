@@ -76,24 +76,27 @@ export function CTASection() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button
-                      size="lg"
-                      className="h-14 px-8 text-lg font-medium group"
+                    <a
+                      href="https://github.com/AungMyoKyaw/git-ingest"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center h-14 px-8 text-lg font-medium group bg-primary text-white rounded-md justify-center transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
                     >
                       <Download className="w-6 h-6 mr-2 group-hover:animate-bounce" />
                       Install Now
                       <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                    </a>
 
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="h-14 px-8 text-lg font-medium group"
+                    <a
+                      href="https://github.com/AungMyoKyaw/git-ingest"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center h-14 px-8 text-lg font-medium group border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
                     >
                       <Github className="w-6 h-6 mr-2" />
-                      View Source
+                      View on GitHub
                       <Star className="w-4 h-4 ml-2 group-hover:fill-current transition-all" />
-                    </Button>
+                    </a>
                   </div>
                 </div>
               </CardContent>
