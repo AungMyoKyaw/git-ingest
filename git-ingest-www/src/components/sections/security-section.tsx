@@ -261,8 +261,8 @@ export function SecuritySection() {
             <h3 className="text-2xl font-bold mb-4">Security Guarantee</h3>
             <p className="text-muted-foreground mb-6">
               Git-Ingest v2.0 has undergone comprehensive security testing and
-              follows industry best practices. We're committed to maintaining
-              the highest security standards.
+              follows industry best practices. We&apos;re committed to
+              maintaining the highest security standards.
             </p>
             <Badge
               variant="outline"
