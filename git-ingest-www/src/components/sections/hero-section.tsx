@@ -27,7 +27,7 @@ export function HeroSection() {
           <div className="flex justify-center animate-fade-in">
             <Badge
               variant="outline"
-              className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5"
+              className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5 whitespace-normal max-w-xs sm:max-w-none"
             >
               <Sparkles className="w-4 h-4 mr-2 text-primary" />
               Version 2.0 - Now with Enhanced Security & Performance
