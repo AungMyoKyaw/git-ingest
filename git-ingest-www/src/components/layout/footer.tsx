@@ -78,6 +78,7 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className="bg-muted/50 border-t border-border/50">
       <div className="container mx-auto px-4 py-16">
@@ -181,7 +182,7 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-muted-foreground">
-            <p>&copy; 2024 Git-Ingest. All rights reserved.</p>
+            <p>&copy; {currentYear} Git-Ingest. All rights reserved.</p>
             <div className="flex items-center space-x-4">
               <a
                 href="https://github.com/AungMyoKyaw/git-ingest/blob/master/PRIVACY.md"
