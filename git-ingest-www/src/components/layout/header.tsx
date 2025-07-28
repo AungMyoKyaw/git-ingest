@@ -17,7 +17,10 @@ export function Header() {
     <header className="w-full bg-background/80 backdrop-blur border-b border-border/50 sticky top-0 z-50">
       <nav className="container mx-auto flex items-center justify-between px-4 py-4">
         {/* Logo/Brand */}
-        <Link href="/" className="flex items-center space-x-2 font-bold text-xl">
+        <Link
+          href="/"
+          className="flex items-center space-x-2 font-bold text-xl"
+        >
           <span className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center text-white">
             GI
           </span>
