@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { Github, Twitter, Linkedin, Mail, ExternalLink } from "lucide-react";
+import { Github, Linkedin, ExternalLink } from "lucide-react";
 
 const navigation = {
   product: [
