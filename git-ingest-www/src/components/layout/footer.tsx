@@ -61,19 +61,9 @@ const socialLinks = [
     icon: Github
   },
   {
-    name: "Twitter",
-    href: "https://twitter.com/AungMyoKyaw",
-    icon: Twitter
-  },
-  {
     name: "LinkedIn",
     href: "https://linkedin.com/in/aungmyokyaw",
     icon: Linkedin
-  },
-  {
-    name: "Email",
-    href: "mailto:aungmyokyaw@example.com",
-    icon: Mail
   }
 ];
 
