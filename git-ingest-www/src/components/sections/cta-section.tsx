@@ -104,7 +104,7 @@ export function CTASection() {
           </div>
 
           {/* Social Proof */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-16">
             <div className="text-center space-y-2">
               <div className="text-3xl font-bold text-primary">10k+</div>
               <div className="text-sm text-muted-foreground">
@@ -124,7 +124,7 @@ export function CTASection() {
           </div>
 
           {/* Feature Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card/60 backdrop-blur-sm border-border/50">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 mx-auto mb-4 bg-green-100 dark:bg-green-950/50 rounded-lg flex items-center justify-center">

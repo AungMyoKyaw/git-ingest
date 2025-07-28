@@ -36,7 +36,7 @@ export function HeroSection() {
 
           {/* Main Headline */}
           <div className="space-y-6 animate-fade-in-up">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight">
               Transform Any
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">
                 Codebase
@@ -44,7 +44,7 @@ export function HeroSection() {
               into AI-Ready Format
             </h1>
 
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               A powerful CLI tool that analyzes and ingests entire project
               codebases into structured text files. Perfect for AI analysis,
               code reviews, and team collaboration.
@@ -53,9 +53,9 @@ export function HeroSection() {
 
           {/* Installation Command */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-200">
-            <div className="flex items-center gap-2 bg-card border rounded-lg p-3 min-w-[300px]">
+            <div className="flex items-center gap-2 bg-card border rounded-lg p-3 w-full sm:w-auto min-w-[300px]">
               <Terminal className="w-5 h-5 text-muted-foreground" />
-              <code className="text-sm font-mono">
+              <code className="text-sm font-mono truncate">
                 npm install -g git-ingest
               </code>
               <Button
@@ -75,7 +75,7 @@ export function HeroSection() {
               href="https://github.com/AungMyoKyaw/git-ingest"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center h-12 px-8 text-base font-medium bg-primary text-white rounded-md justify-center transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full sm:w-auto inline-flex items-center h-12 px-8 text-base font-medium bg-primary text-white rounded-md justify-center transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <Download className="w-5 h-5 mr-2" />
               Get Started Now
@@ -85,7 +85,7 @@ export function HeroSection() {
               href="https://github.com/AungMyoKyaw/git-ingest"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center h-12 px-8 text-base font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full sm:w-auto inline-flex items-center h-12 px-8 text-base font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <Github className="w-5 h-5 mr-2" />
               View on GitHub

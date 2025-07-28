@@ -125,7 +125,7 @@ export function UseCasesSection() {
             return (
               <Card
                 key={useCase.title}
-                className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden relative"
+                className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden relative flex flex-col"
               >
                 {/* Gradient Background */}
                 <div
@@ -154,7 +154,7 @@ export function UseCasesSection() {
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className="flex-grow">
                   <div className="space-y-3">
                     <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
                       Perfect For:

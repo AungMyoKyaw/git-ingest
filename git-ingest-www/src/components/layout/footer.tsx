@@ -72,7 +72,7 @@ export function Footer() {
   return (
     <footer className="bg-muted/50 border-t border-border/50">
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center space-x-2">
@@ -106,64 +106,66 @@ export function Footer() {
           </div>
 
           {/* Navigation Sections */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              Product
-            </h3>
-            <ul className="space-y-3">
-              {navigation.product.map((item) => (
-                <li key={item.name}>
-                  <a
-                    href={item.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                  >
-                    {item.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:col-span-3 gap-8">
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                Product
+              </h3>
+              <ul className="space-y-3">
+                {navigation.product.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              Resources
-            </h3>
-            <ul className="space-y-3">
-              {navigation.resources.map((item) => (
-                <li key={item.name}>
-                  <a
-                    href={item.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-1"
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                  >
-                    {item.name}
-                    {item.external && <ExternalLink className="w-3 h-3" />}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                Resources
+              </h3>
+              <ul className="space-y-3">
+                {navigation.resources.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-1"
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                    >
+                      {item.name}
+                      {item.external && <ExternalLink className="w-3 h-3" />}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              Support
-            </h3>
-            <ul className="space-y-3">
-              {navigation.support.map((item) => (
-                <li key={item.name}>
-                  <a
-                    href={item.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-1"
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                  >
-                    {item.name}
-                    {item.external && <ExternalLink className="w-3 h-3" />}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                Support
+              </h3>
+              <ul className="space-y-3">
+                {navigation.support.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-1"
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                    >
+                      {item.name}
+                      {item.external && <ExternalLink className="w-3 h-3" />}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -215,7 +217,7 @@ export function Footer() {
 
         {/* Installation Reminder */}
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-lg px-4 py-2 ">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-2 bg-primary/5 border border-primary/20 rounded-lg px-4 py-2 ">
             <code className="text-sm font-mono">npm install -g git-ingest</code>
             <span className="text-xs text-muted-foreground">
               • Start transforming codebases today

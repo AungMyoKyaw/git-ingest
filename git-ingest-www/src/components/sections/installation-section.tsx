@@ -82,7 +82,7 @@ export function InstallationSection({ id }: { id?: string }) {
         </div>
 
         {/* Installation Methods */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {installMethods.map((method, index) => (
             <Card
               key={method.title}
@@ -172,7 +172,7 @@ export function InstallationSection({ id }: { id?: string }) {
 
         {/* Quick Start CTA */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center gap-4 bg-primary/5 border border-primary/20 rounded-lg p-6">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-primary/5 border border-primary/20 rounded-lg p-6">
             <div className="text-left">
               <h4 className="font-semibold text-lg mb-1">
                 Ready to get started?

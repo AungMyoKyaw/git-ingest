@@ -206,7 +206,7 @@ export function SecuritySection({ id }: { id?: string }) {
                 {vulnerabilityFixes.map((vuln) => (
                   <div
                     key={vuln.issue}
-                    className="flex items-start gap-4 p-4 bg-background/60 rounded-lg border"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-background/60 rounded-lg border"
                   >
                     <div className="flex-shrink-0 mt-1">
                       {vuln.severity === "Critical" && (
