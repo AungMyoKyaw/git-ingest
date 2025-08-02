@@ -196,7 +196,11 @@ export default [
       "default-case": "off",
       "n/no-unpublished-require": "off",
       "n/no-unpublished-import": "off",
-      "n/no-process-env": "off"
+      "n/no-process-env": "off",
+      "no-empty-function": [
+        "error",
+        { "allow": ["arrowFunctions", "constructors"] }
+      ]
     }
   },
 
