@@ -17,6 +17,20 @@ import {
 
 const useCases = [
   {
+    icon: FileSearch,
+    title: "Security & Compliance Auditing",
+    description:
+      "Automatically scan codebases for security vulnerabilities, license compliance, and sensitive data exposure. Ensure your projects meet industry standards and avoid costly mistakes before deployment.",
+    examples: [
+      "Vulnerability detection",
+      "License compliance checks",
+      "Sensitive data scanning",
+      "Audit trail generation"
+    ],
+    badge: "Security",
+    gradient: "from-red-600 to-yellow-500"
+  },
+  {
     icon: Bot,
     title: "AI Analysis",
     description:
@@ -85,20 +99,6 @@ const useCases = [
     ],
     badge: "Collaboration",
     gradient: "from-indigo-500 to-purple-500"
-  },
-  {
-    icon: FileSearch,
-    title: "CI/CD Integration",
-    description:
-      "Built-in GitHub Actions support with automated code coverage reporting and Codecov integration for continuous quality monitoring and documentation updates.",
-    examples: [
-      "Automated documentation",
-      "Coverage reporting",
-      "Quality gates",
-      "Build integration"
-    ],
-    badge: "DevOps Ready",
-    gradient: "from-teal-500 to-blue-500"
   }
 ];
 
