@@ -1,5 +1,10 @@
 // Vitest setup file for global test configuration
+
 import { beforeEach, vi } from "vitest";
+import chalk from "chalk";
+
+// Force chalk to always output color in tests
+chalk.level = 1;
 
 // Set test environment
 process.env.NODE_ENV = "test";
