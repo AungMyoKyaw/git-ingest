@@ -22,7 +22,7 @@ export const theme = {
   fileSize: chalk[COLOR_THEME.FILE_SIZE],
   directory: chalk[COLOR_THEME.DIRECTORY],
   binaryFile: chalk[COLOR_THEME.BINARY_FILE],
-  largeFile: chalk[COLOR_THEME.LARGE_FILE],
+  largeFile: chalk[COLOR_THEME.LARGE_FILE] || chalk.yellow,
 
   // Progress indicators
   progressSuccess: chalk[COLOR_THEME.PROGRESS_SUCCESS],
