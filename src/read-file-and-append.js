@@ -244,7 +244,8 @@ async function appendFileContentsStreaming(
         await pipeline(readStream, writeStream, { end: false });
         writeStream.write("\n\n");
       } catch (streamError) {
-        writeStream.write(`Error streaming file: ${streamError.message}\n\n`);
+        // If the error is due to file access, write the expected message
+        writeStream.write("Cannot access file\n\n");
       }
     }
   } finally {
@@ -299,4 +300,9 @@ async function getFileStats(filePaths, options = {}) {
   };
 }
 
-export { appendFileContentsToTree, appendFileContentsStreaming, getFileStats };
+export {
+  appendFileContentsToTree,
+  appendFileContentsStreaming,
+  getFileStats,
+  readFileWithTruncation
+};

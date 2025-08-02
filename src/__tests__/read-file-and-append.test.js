@@ -4,7 +4,8 @@ import { fileURLToPath } from "url";
 import {
   appendFileContentsToTree,
   appendFileContentsStreaming,
-  getFileStats
+  getFileStats,
+  readFileWithTruncation
 } from "../read-file-and-append.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -309,6 +310,101 @@ describe("Read File and Append Module", () => {
 
       const content = await fs.readFile(outputFile, "utf8");
       expect(content).toContain("valid content");
+    });
+
+    // --- Additional tests for 100% coverage ---
+    test("should handle error when creating write stream in appendFileContentsToTree", async () => {
+      const filePaths = [path.join(testDir, "small.txt")];
+      const originalCreateWriteStream = require("fs").createWriteStream;
+      require("fs").createWriteStream = () => {
+        throw new Error("Stream error");
+      };
+      try {
+        await expect(
+          appendFileContentsToTree(filePaths, outputFile)
+        ).resolves.toBeUndefined();
+      } finally {
+        require("fs").createWriteStream = originalCreateWriteStream;
+      }
+    });
+
+    test("should handle error in Promise.allSettled in appendFileContentsToTree", async () => {
+      // Simulate error by passing a file that will throw in processFile
+      const filePaths = ["/dev/null/invalid-path.txt"];
+      await expect(
+        appendFileContentsToTree(filePaths, outputFile)
+      ).resolves.toBeUndefined();
+    });
+
+    test("should handle error in readFileWithTruncation", async () => {
+      // Patch fs.open to throw
+      const originalOpen = require("fs/promises").open;
+      require("fs/promises").open = () => {
+        throw new Error("open error");
+      };
+      try {
+        await expect(
+          readFileWithTruncation(path.join(testDir, "small.txt"))
+        ).rejects.toThrow("open error");
+      } finally {
+        require("fs/promises").open = originalOpen;
+      }
+    });
+
+    test("should handle error when creating write stream in appendFileContentsStreaming", async () => {
+      const originalCreateWriteStream = require("fs").createWriteStream;
+      require("fs").createWriteStream = () => {
+        throw new Error("Stream error");
+      };
+      try {
+        await expect(
+          appendFileContentsStreaming(
+            [path.join(testDir, "small.txt")],
+            outputFile
+          )
+        ).resolves.toBeUndefined();
+      } finally {
+        require("fs").createWriteStream = originalCreateWriteStream;
+      }
+    });
+
+    test("should handle error in pipeline in appendFileContentsStreaming", async () => {
+      const { appendFileContentsStreaming } = await import(
+        "../read-file-and-append.js"
+      );
+      const originalPipeline = require("stream/promises").pipeline;
+      require("stream/promises").pipeline = () => {
+        throw new Error("pipeline error");
+      };
+      try {
+        await expect(
+          appendFileContentsStreaming(
+            [path.join(testDir, "small.txt")],
+            outputFile
+          )
+        ).resolves.toBeUndefined();
+      } finally {
+        require("stream/promises").pipeline = originalPipeline;
+      }
+    });
+
+    test("should handle all skipInfo reasons in getFileStats", async () => {
+      // Simulate binary, too large, and custom skip reasons
+      const { getFileStats } = await import("../read-file-and-append.js");
+      const fakeFiles = ["binary.bin", "large.txt", "custom.skip"];
+      const fakeOptions = {
+        config: {
+          options: { MAX_FILE_SIZE_MB: 0.001 },
+          maxFileSizeBytes: 1024,
+          createSeparator: () => "---",
+          formatFileSize: (n) => `${n}B`
+        }
+      };
+      const stats = await getFileStats(fakeFiles, fakeOptions);
+      expect(stats.totalFiles).toBe(3);
+      expect(typeof stats.textFiles).toBe("number");
+      expect(typeof stats.binaryFiles).toBe("number");
+      expect(typeof stats.largeFiles).toBe("number");
     });
   });
 });
