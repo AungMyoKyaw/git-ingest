@@ -85,7 +85,7 @@ Options:
 
 Git-Ingest supports two output formats optimized for different use cases. **Markdown is now the default output format.**
 
-### � Markdown Format (Default, LLM-Optimized)
+### 📝 Markdown Format (Default, LLM-Optimized)
 
 The default output is a structured, semantic Markdown format designed for optimal AI/LLM processing:
 

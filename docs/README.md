@@ -2,12 +2,12 @@
 
 This directory contains documentation for the Git-Ingest CLI tool.
 
-## � Documentation Structure
+## 📚 Documentation Structure
 
 - **[overview.md](./overview.md)** - Technical overview and architecture
 - **README.md** - This documentation index (you are here)
 
-## � Quick Start
+## ⚡ Quick Start
 
 For users: See the main [README.md](../README.md) in the project root.
 
@@ -21,10 +21,10 @@ When contributing to this project:
 2. Maintain the existing documentation structure
 3. Follow the established format and style
 
-## � Support
+## 🛠️ Support
 
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/AungMyoKyaw/git-ingest/issues)
-- � **Feature Requests**: [GitHub Discussions](https://github.com/AungMyoKyaw/git-ingest/discussions)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/AungMyoKyaw/git-ingest/discussions)
 
 ---
 
