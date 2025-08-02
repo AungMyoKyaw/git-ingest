@@ -42,6 +42,9 @@ git-ingest --quiet
 # Custom output filename
 git-ingest --output my-project-analysis.txt
 
+# Generate LLM-friendly markdown format
+git-ingest --format markdown
+
 # Include only specific file patterns
 git-ingest --include "*.js" "*.ts" "*.json"
 
@@ -50,6 +53,9 @@ git-ingest --exclude "*.test.js" "*.spec.js"
 
 # Set maximum file size (in MB)
 git-ingest --max-size 5
+
+# Generate markdown with custom output
+git-ingest --format markdown --output analysis.md
 ```
 
 ### All Options
@@ -63,6 +69,7 @@ Arguments:
 Options:
   -V, --version                output the version number
   -o, --output <filename>      Specify output filename
+  -f, --format <type>          Output format: text or markdown (default: "text")
   -c, --copy                   Copy output to clipboard
   -i, --include <patterns...>  Include files matching patterns
   -e, --exclude <patterns...>  Exclude files matching patterns
@@ -74,14 +81,11 @@ Options:
 
 ## 📊 Output Format
 
-Git-Ingest generates a comprehensive analysis including:
+Git-Ingest supports two output formats optimized for different use cases:
 
-1. **Directory Structure**: Visual tree representation
-2. **File Contents**: Full text content of all files
-3. **Metadata**: File sizes, timestamps, and statistics
-4. **Processing Summary**: Files processed, skipped, and error counts
+### 📝 Text Format (Default)
 
-Example output:
+The classic plain text format with directory tree and file contents:
 
 ```
 Directory structure for: /path/to/project
@@ -92,12 +96,8 @@ Total items: 15
 ├── README.md
 ├── src/
 │   ├── index.js
-│   ├── utils/
-│   │   └── helpers.js
-│   └── components/
-│       └── Button.js
-└── tests/
-    └── index.test.js
+│   └── utils/
+│       └── helpers.js
 
 ================================================
 File: package.json
@@ -106,13 +106,57 @@ File: package.json
   "name": "my-project",
   "version": "1.0.0"
 }
-
-================================================
-File: README.md
-================================================
-# My Project
-...
 ```
+
+### 📋 Markdown Format (LLM-Optimized)
+
+A structured, semantic format designed for optimal AI/LLM processing:
+
+```bash
+git-ingest --format markdown
+```
+
+Features:
+
+- **🎯 LLM-Friendly Structure**: Hierarchical organization with proper semantic markup
+- **🔍 Language Detection**: Automatic syntax highlighting for 60+ programming languages
+- **📊 Rich Metadata**: File statistics, language distribution, and categorization
+- **📑 Table of Contents**: Navigation-friendly structure with links
+- **🏷️ File Categorization**: Organized by Web Frontend, Backend, DevOps, etc.
+- **💻 Code Blocks**: Proper syntax highlighting for better readability
+- **📈 Analytics**: Comprehensive project statistics and insights
+
+Example markdown output structure:
+
+````markdown
+# 🚀 Project Analysis Report
+
+## 📊 Project Overview
+
+**Language:** javascript | **Files:** 25 | **Size:** 2.3 MB
+
+## 📈 Statistics
+
+### 📊 File Type Distribution
+
+| Category       | Files | Percentage |
+| -------------- | ----- | ---------- |
+| Web Frontend   | 15    | 60.0%      |
+| Backend/Server | 8     | 32.0%      |
+
+### 📄 `app.js`
+
+**Path:** `src/app.js`
+**Size:** 3.2 KB
+**Language:** javascript (high confidence)
+**Category:** Web Frontend
+
+```javascript
+// Your code here with proper syntax highlighting
+```
+````
+
+````
 
 ## 🔧 Development
 
@@ -139,7 +183,7 @@ npm run lint
 
 # Format code
 npm run format
-```
+````
 
 ### Testing
 

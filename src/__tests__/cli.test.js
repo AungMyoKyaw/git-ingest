@@ -203,18 +203,15 @@ describe("CLI Module", () => {
       expect(content).toContain("too large");
     });
 
-    test("should show deprecation warning for format option", async () => {
-      const { code, stdout } = await runCLI([testDir, "--format", "json"]);
+    test("should handle format option", async () => {
+      const { code, stdout } = await runCLI([testDir, "--format", "markdown"]);
       expect(code).toBe(0);
-      expect(stdout).toContain(
-        "Warning: The --format option has been deprecated"
-      );
-      expect(stdout).toContain("All output is now generated in text format");
+      expect(stdout).toContain("Format: markdown");
 
-      // Should still generate a .txt file, not .json
+      // Should generate a .md file when format is markdown
       const files = await fs.readdir(testDir);
       const outputFile = files.find((f) => f.startsWith("git-ingest-"));
-      expect(outputFile).toMatch(/\.txt$/);
+      expect(outputFile).toMatch(/\.md$/);
     });
 
     test("should show deprecation warning for config option", async () => {

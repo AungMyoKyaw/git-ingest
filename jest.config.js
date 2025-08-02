@@ -1,6 +1,11 @@
 export default {
   testEnvironment: "node",
-  transform: {},
+  transform: {
+    "^.+\\.js$": ["babel-jest", { presets: ["@babel/preset-env"] }]
+  },
+  testEnvironmentOptions: {
+    customExportConditions: ["node", "node-addons"]
+  },
   collectCoverageFrom: [
     "src/**/*.js",
     "!src/**/*.test.js",
@@ -21,7 +26,6 @@ export default {
     }
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  // Ensure proper cleanup
   forceExit: false,
   detectOpenHandles: true
 };

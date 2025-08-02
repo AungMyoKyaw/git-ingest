@@ -29,7 +29,9 @@
     "ora": "^8.2.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.0",
     "@eslint/js": "^9.30.0",
+    "babel-jest": "^30.0.5",
     "eslint": "^9.30.0",
     "eslint-plugin-n": "^17.20.0",
     "globals": "^16.2.0",

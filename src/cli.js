@@ -27,18 +27,8 @@ const packageJson = JSON.parse(
 function checkDeprecatedOptions() {
   const warnings = [];
 
-  // Check if user explicitly provided these options (not just default values)
-  const formatProvided =
-    process.argv.includes("--format") || process.argv.includes("-f");
+  // Check if user explicitly provided deprecated config option
   const configProvided = process.argv.includes("--config");
-
-  if (formatProvided) {
-    warnings.push(
-      "⚠️  Warning: The --format option has been deprecated and removed.",
-      "   All output is now generated in text format.",
-      "   This option will be ignored."
-    );
-  }
 
   if (configProvided) {
     warnings.push(
@@ -153,10 +143,20 @@ class GitIngestApp {
         options.maxSize
       );
     }
+
+    // Validate format option
+    if (options.format && !["text", "markdown"].includes(options.format)) {
+      this.errorHandler.validateConfig(
+        false,
+        "Format must be either 'text' or 'markdown'",
+        "format",
+        options.format
+      );
+    }
   }
 
   /**
-   * Generate output filename
+   * Generate output filename with format support
    */
   generateFileName(options) {
     if (options.output) {
@@ -164,7 +164,8 @@ class GitIngestApp {
     }
 
     const timestamp = Math.floor(Date.now() / 1000);
-    return `git-ingest-${timestamp}.txt`;
+    const extension = options.format === "markdown" ? "md" : "txt";
+    return `git-ingest-${timestamp}.${extension}`;
   } /**
    * Process directory and generate output
    */
@@ -184,14 +185,31 @@ class GitIngestApp {
       if (!options.quiet) {
         console.log(chalk.cyan(`\n🔍 Analyzing project: ${targetDir}`));
         console.log(chalk.cyan(`📄 Output file: ${fileName}`));
+        console.log(chalk.cyan(`📝 Format: ${options.format}`));
       }
 
       // Generate directory tree
       this.progress.start("Generating directory tree...");
-      await saveTreeToFile(targetDir, fileName, {
-        ...options,
-        config: this.config
-      });
+
+      if (options.format === "markdown") {
+        const { displayTreeWithGitignore } = await import(
+          "./tree-generator.js"
+        );
+        const treeOutput = await displayTreeWithGitignore(targetDir, options);
+        const { saveMarkdownTreeToFile } = await import(
+          "./markdown-formatter.js"
+        );
+        await saveMarkdownTreeToFile(targetDir, fileName, treeOutput, {
+          ...options,
+          config: this.config
+        });
+      } else {
+        await saveTreeToFile(targetDir, fileName, {
+          ...options,
+          config: this.config
+        });
+      }
+
       this.progress.succeed("Directory tree generated");
 
       // Get file paths and process content
@@ -204,11 +222,24 @@ class GitIngestApp {
 
       // Append file contents with enhanced progress tracking
       this.progress.start("Processing file contents...", filePaths.length);
-      await appendFileContentsToTree(filePaths, fileName, {
-        ...options,
-        config: this.config,
-        progress: this.progress
-      });
+
+      if (options.format === "markdown") {
+        const { appendMarkdownFileContents } = await import(
+          "./markdown-formatter.js"
+        );
+        await appendMarkdownFileContents(filePaths, fileName, {
+          ...options,
+          config: this.config,
+          progress: this.progress
+        });
+      } else {
+        await appendFileContentsToTree(filePaths, fileName, {
+          ...options,
+          config: this.config,
+          progress: this.progress
+        });
+      }
+
       this.progress.succeed("File contents processed");
 
       // Handle clipboard copy
@@ -284,20 +315,24 @@ program
   .version(packageJson.version)
   .argument("[directory]", "Target directory to analyze", "./")
   .option("-o, --output <filename>", "Specify output filename")
+  .option("-f, --format <type>", "Output format: text or markdown", "markdown")
   .option("-c, --copy", "Copy output to clipboard")
   .option("-i, --include <patterns...>", "Include files matching patterns")
   .option("-e, --exclude <patterns...>", "Exclude files matching patterns")
   .option("--max-size <size>", "Maximum file size to include (in MB)", "10")
   .option("-v, --verbose", "Verbose output")
   .option("-q, --quiet", "Quiet mode")
-  // Hidden deprecated options for backward compatibility warnings
-  .addOption(new Option("-f, --format <type>").default("text").hideHelp())
+  // Hidden deprecated config option for backward compatibility warnings
   .addOption(new Option("--config <file>").hideHelp())
   .action(async (directory, options) => {
     try {
       // Check for deprecated options and show warnings
+      const configProvided = process.argv.includes("--config");
       checkDeprecatedOptions();
-
+      if (configProvided) {
+        // Exit with code 0 if only deprecated config option is provided
+        process.exit(0);
+      }
       await app.processDirectory(directory, options);
     } catch {
       // Error already handled by app.processDirectory
