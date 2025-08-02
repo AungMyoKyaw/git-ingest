@@ -7,8 +7,7 @@ import {
 } from "../tree-generator.js";
 
 // Static fallback for metaUrl in Jest
-const metaUrl =
-  "file://" + process.cwd() + "/src/__tests__/tree-generator.fuzz.test.js";
+const metaUrl = `file://${process.cwd()}/src/__tests__/tree-generator.fuzz.test.js`;
 const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 

@@ -243,7 +243,7 @@ async function appendFileContentsStreaming(
         const readStream = createReadStream(filePath, { encoding: "utf8" });
         await pipeline(readStream, writeStream, { end: false });
         writeStream.write("\n\n");
-      } catch (streamError) {
+      } catch (_streamError) {
         // If the error is due to file access, write the expected message
         writeStream.write("Cannot access file\n\n");
       }

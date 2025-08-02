@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // Static fallback for metaUrl in Jest
-const metaUrl = "file://" + process.cwd() + "/src/__tests__/cli-unit.test.js";
+const metaUrl = `file://${process.cwd()}/src/__tests__/cli-unit.test.js`;
 const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 

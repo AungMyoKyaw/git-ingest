@@ -9,8 +9,7 @@ import {
 } from "../tree-generator.js";
 
 // Static fallback for metaUrl in Jest
-const metaUrl =
-  "file://" + process.cwd() + "/src/__tests__/tree-generator.test.js";
+const metaUrl = `file://${process.cwd()}/src/__tests__/tree-generator.test.js`;
 const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 
@@ -398,7 +397,7 @@ describe("Tree Generator", () => {
         const brokenLink = path.join(tempDir, "broken-link");
         try {
           await fs.symlink("/non/existent/target", brokenLink);
-        } catch (e) {
+        } catch (_e) {
           // Symlink creation might fail on some systems, that's ok
         }
 

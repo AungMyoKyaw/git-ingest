@@ -23,7 +23,7 @@ function getMetaUrl() {
   try {
     return import.meta.url;
   } catch {
-    return "file://" + process.cwd() + "/src/cli.js";
+    return `file://${process.cwd()}/src/cli.js`;
   }
 }
 const metaUrl = getMetaUrl();

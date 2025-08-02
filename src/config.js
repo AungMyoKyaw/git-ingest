@@ -14,7 +14,7 @@ function getMetaUrl() {
     // Only works in ESM
     return import.meta.url;
   } catch {
-    return "file://" + process.cwd() + "/src/config.js";
+    return `file://${process.cwd()}/src/config.js`;
   }
 }
 const __filename = fileURLToPath(getMetaUrl());

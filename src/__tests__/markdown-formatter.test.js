@@ -5,6 +5,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { vi } from "vitest";
 import { Config } from "../config.js";
 import {
   saveMarkdownTreeToFile,
@@ -17,7 +18,8 @@ import {
 } from "../markdown-formatter.js";
 
 // Provide a static fallback for import.meta.url in Jest
-let __filename, __dirname;
+let __filename;
+let __dirname;
 try {
   __filename = fileURLToPath(import.meta.url);
   __dirname = path.dirname(__filename);
@@ -36,7 +38,7 @@ describe("Markdown Formatter Module", () => {
 
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch (_error) {
       // Directory might not exist, ignore error
     }
 

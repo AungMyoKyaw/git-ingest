@@ -367,7 +367,7 @@ describe("Global Error Handlers", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     const origProcessOn = process.on;
     let called = false;
-    process.on = (event, cb) => {
+    process.on = (event, _cb) => {
       if (event === "uncaughtException") {
         called = true;
       }
@@ -383,7 +383,7 @@ describe("Global Error Handlers", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     const origProcessOn = process.on;
     let called = false;
-    process.on = (event, cb) => {
+    process.on = (event, _cb) => {
       if (event === "unhandledRejection") {
         called = true;
       }
