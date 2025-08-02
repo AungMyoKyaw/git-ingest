@@ -20,49 +20,49 @@ const useCases = [
     icon: Bot,
     title: "AI Analysis",
     description:
-      "Perfect for feeding entire codebases to AI tools like ChatGPT, Claude, or GitHub Copilot for analysis, documentation, or refactoring suggestions.",
+      "Perfect for feeding entire codebases to AI tools like ChatGPT, Claude, or GitHub Copilot. The new markdown format provides structured, LLM-friendly output with syntax highlighting.",
     examples: [
       "Code review automation",
       "Documentation generation",
       "Refactoring suggestions",
       "Bug detection patterns"
     ],
-    badge: "Popular",
+    badge: "Enhanced in 2.1",
     gradient: "from-purple-500 to-pink-500"
   },
   {
     icon: MessageSquare,
-    title: "Code Reviews",
+    title: "Documentation & Reports",
     description:
-      "Generate comprehensive project overviews for code reviews, sharing complete project context in a single, structured document.",
+      "Generate comprehensive markdown reports with table of contents, project overview, and language statistics. Perfect for technical documentation and project snapshots.",
     examples: [
-      "Pull request context",
-      "Architecture reviews",
-      "Security audits",
-      "Compliance checks"
+      "Structured project reports",
+      "Architecture documentation",
+      "Compliance documentation",
+      "Technical specifications"
     ],
-    badge: "Enterprise",
+    badge: "New Format",
     gradient: "from-blue-500 to-cyan-500"
   },
   {
     icon: BookOpen,
-    title: "Documentation",
+    title: "Code Reviews",
     description:
-      "Create snapshot documentation of project structure and content for onboarding new team members or archival purposes.",
+      "Enhanced language detection and markdown formatting make code reviews more effective with better context and syntax highlighting for better readability.",
     examples: [
-      "Onboarding guides",
-      "Project snapshots",
-      "Architecture docs",
-      "Knowledge transfer"
+      "Pull request context",
+      "Architecture reviews",
+      "Security audits",
+      "Quality assurance"
     ],
-    badge: "Teams",
+    badge: "Improved",
     gradient: "from-green-500 to-emerald-500"
   },
   {
     icon: RefreshCw,
     title: "Project Migration",
     description:
-      "Analyze and understand legacy codebases before migration or modernization efforts, getting complete visibility into existing systems.",
+      "Analyze and understand legacy codebases before migration or modernization efforts, getting complete visibility into existing systems with detailed language breakdown.",
     examples: [
       "Legacy assessment",
       "Modernization planning",
@@ -76,28 +76,28 @@ const useCases = [
     icon: Users,
     title: "Team Collaboration",
     description:
-      "Share project context quickly with team members, stakeholders, or external consultants without complex setup or access requirements.",
+      "Share structured project context quickly with team members, stakeholders, or external consultants. Markdown format is perfect for wikis and documentation platforms.",
     examples: [
       "Stakeholder reports",
-      "Consultant briefings",
+      "Wiki documentation",
       "Remote collaboration",
-      "Context sharing"
+      "Knowledge sharing"
     ],
     badge: "Collaboration",
     gradient: "from-indigo-500 to-purple-500"
   },
   {
     icon: FileSearch,
-    title: "Quality Assurance",
+    title: "CI/CD Integration",
     description:
-      "Comprehensive codebase analysis for quality assurance, identifying patterns, inconsistencies, and potential improvements across large projects.",
+      "Built-in GitHub Actions support with automated code coverage reporting and Codecov integration for continuous quality monitoring and documentation updates.",
     examples: [
-      "Code pattern analysis",
-      "Consistency checking",
-      "Technical debt assessment",
-      "Best practice validation"
+      "Automated documentation",
+      "Coverage reporting",
+      "Quality gates",
+      "Build integration"
     ],
-    badge: "Quality",
+    badge: "DevOps Ready",
     gradient: "from-teal-500 to-blue-500"
   }
 ];

@@ -47,34 +47,34 @@ const improvements = [
     metric: "Processing Speed",
     improvement: "10x Faster",
     description:
-      "Complete rewrite with async operations and streaming architecture",
+      "Complete rewrite with async operations, streaming architecture, and p-limit concurrency control for optimal performance",
     icon: TrendingUp
   },
   {
     metric: "Memory Usage",
     improvement: "Constant",
     description:
-      "Memory-efficient streaming prevents overflow regardless of project size",
+      "Memory-efficient streaming prevents overflow regardless of project size with smart memory pool management",
     icon: Activity
   },
   {
-    metric: "UI Responsiveness",
-    improvement: "100% Responsive",
+    metric: "Concurrency Control",
+    improvement: "Smart Limiting",
     description:
-      "Async operations ensure the CLI remains responsive during processing",
+      "Advanced p-limit integration manages concurrent file operations preventing system overload while maximizing throughput",
     icon: CheckCircle
   }
 ];
 
 const technicalFeatures = [
   "Streaming Architecture",
-  "Async File Operations",
-  "Smart Caching System",
+  "P-limit Concurrency Control",
+  "Advanced Language Detection",
+  "Markdown Output Format",
   "Binary File Detection",
   "Memory Pool Management",
-  "Progress Tracking",
-  "Error Recovery",
-  "Interrupt Handling"
+  "CI/CD Integration",
+  "Code Coverage Reporting"
 ];
 
 export function PerformanceSection({ id }: { id?: string }) {
@@ -89,8 +89,9 @@ export function PerformanceSection({ id }: { id?: string }) {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground">
-            Git-Ingest v2.0 delivers exceptional performance with
-            enterprise-grade reliability and scalability.
+            Git-Ingest v2.1.0 delivers exceptional performance with
+            enterprise-grade reliability, enhanced concurrency control, and
+            advanced language processing.
           </p>
         </div>
 
@@ -150,7 +151,7 @@ export function PerformanceSection({ id }: { id?: string }) {
         {/* Version 2.0 Improvements */}
         <div className="max-w-5xl mx-auto mb-16">
           <h3 className="text-3xl font-bold text-center mb-12">
-            Version 2.0 Performance Improvements
+            Version 2.1.0 Performance Improvements
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {improvements.map((improvement) => {
@@ -212,7 +213,7 @@ export function PerformanceSection({ id }: { id?: string }) {
 
         {/* Performance Comparison */}
         <div className="mt-16 max-w-3xl mx-auto text-center">
-          <h3 className="text-2xl font-bold mb-8">v1.0 vs v2.0 Comparison</h3>
+          <h3 className="text-2xl font-bold mb-8">v1.0 vs v2.1.0 Comparison</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-muted-foreground">
@@ -228,14 +229,14 @@ export function PerformanceSection({ id }: { id?: string }) {
                   <span className="text-red-500">~1GB+</span>
                 </div>
                 <div className="flex justify-between p-2 bg-muted/30 rounded">
-                  <span>UI blocking:</span>
-                  <span className="text-red-500">Yes</span>
+                  <span>Output format:</span>
+                  <span className="text-red-500">Text only</span>
                 </div>
               </div>
             </div>
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-primary">
-                Version 2.0
+                Version 2.1.0
               </h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between p-2 bg-primary/5 border border-primary/20 rounded">
@@ -251,8 +252,10 @@ export function PerformanceSection({ id }: { id?: string }) {
                   </span>
                 </div>
                 <div className="flex justify-between p-2 bg-primary/5 border border-primary/20 rounded">
-                  <span>UI blocking:</span>
-                  <span className="text-green-500 font-semibold">Never</span>
+                  <span>Output format:</span>
+                  <span className="text-green-500 font-semibold">
+                    Text + Markdown
+                  </span>
                 </div>
               </div>
             </div>

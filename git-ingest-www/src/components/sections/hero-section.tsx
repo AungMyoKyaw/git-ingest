@@ -30,7 +30,7 @@ export function HeroSection() {
               className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5 whitespace-normal max-w-xs sm:max-w-none"
             >
               <Sparkles className="w-4 h-4 mr-2 text-primary" />
-              Version 2.0 - Now with Enhanced Security & Performance
+              Version 2.1 - Now with Markdown Output & Language Detection
             </Badge>
           </div>
 
@@ -46,8 +46,9 @@ export function HeroSection() {
 
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               A powerful CLI tool that analyzes and ingests entire project
-              codebases into structured text files. Perfect for AI analysis,
-              code reviews, and team collaboration.
+              codebases into structured text or markdown files. Perfect for AI
+              analysis, code reviews, documentation, and team collaboration with
+              enhanced language detection.
             </p>
           </div>
 

@@ -36,35 +36,35 @@ const features = [
     icon: Zap,
     title: "Lightning Fast",
     description:
-      "10x faster than v1.0 with async operations, memory-efficient streaming, and smart caching. Process 10,000+ files in under 60 seconds.",
+      "10x faster than v1.0 with async operations, memory-efficient streaming, and smart caching. Process 10,000+ files in under 60 seconds with p-limit concurrency control.",
     badge: "Performance"
   },
   {
     icon: FileText,
-    title: "Smart File Detection",
+    title: "Markdown Output Format",
     description:
-      "Advanced gitignore support, binary file detection, and intelligent filtering to process only the files that matter.",
-    badge: "Intelligent"
+      "NEW: Generate structured, LLM-friendly markdown reports with table of contents, project overview, language statistics, and syntax highlighting.",
+    badge: "New in 2.1"
   },
   {
     icon: GitBranch,
-    title: "Git Integration",
+    title: "Advanced Language Detection",
     description:
-      "Seamless integration with Git repositories, respects .gitignore files, and understands your project structure automatically.",
-    badge: "Git Native"
+      "Enhanced language detection module identifies file types based on extensions and filenames, providing better categorization and syntax highlighting.",
+    badge: "Improved"
   },
   {
     icon: Copy,
-    title: "Clipboard Ready",
+    title: "CI/CD Integration",
     description:
-      "Cross-platform clipboard integration lets you instantly copy analysis results for use with AI tools, documentation, or sharing.",
-    badge: "Convenient"
+      "Built-in GitHub Actions workflow support with automated testing, code coverage reporting, and Codecov integration for continuous quality assurance.",
+    badge: "DevOps Ready"
   },
   {
     icon: Filter,
     title: "Advanced Filtering",
     description:
-      "Flexible include/exclude patterns, custom file size limits, and granular control over what gets analyzed in your codebase.",
+      "Flexible include/exclude patterns, custom file size limits, externalized configuration files, and granular control over what gets analyzed.",
     badge: "Flexible"
   },
   {
@@ -88,8 +88,9 @@ export function FeaturesSection({ id }: { id?: string }) {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground">
-            Git-Ingest v2.0 combines powerful analysis capabilities with
-            enterprise-grade security and performance.
+            Git-Ingest v2.1 introduces markdown output format, enhanced language
+            detection, and CI/CD integration while maintaining enterprise-grade
+            security and performance.
           </p>
         </div>
 

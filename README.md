@@ -40,11 +40,12 @@ git-ingest --quiet
 ### Advanced Options
 
 ```bash
-# Custom output filename
-git-ingest --output my-project-analysis.txt
 
-# Generate LLM-friendly markdown format
-git-ingest --format markdown
+# Custom output filename (Markdown)
+git-ingest --output my-project-analysis.md
+
+# Generate classic text format output
+git-ingest --format text --output analysis.txt
 
 # Include only specific file patterns
 git-ingest --include "*.js" "*.ts" "*.json"
@@ -55,8 +56,8 @@ git-ingest --exclude "*.test.js" "*.spec.js"
 # Set maximum file size (in MB)
 git-ingest --max-size 5
 
-# Generate markdown with custom output
-git-ingest --format markdown --output analysis.md
+# Generate text format with custom output
+git-ingest --format text --output analysis.txt
 ```
 
 ### All Options
@@ -70,7 +71,7 @@ Arguments:
 Options:
   -V, --version                output the version number
   -o, --output <filename>      Specify output filename
-  -f, --format <type>          Output format: text or markdown (default: "text")
+  -f, --format <type>          Output format: markdown or text (default: "markdown")
   -c, --copy                   Copy output to clipboard
   -i, --include <patterns...>  Include files matching patterns
   -e, --exclude <patterns...>  Exclude files matching patterns
@@ -82,39 +83,14 @@ Options:
 
 ## 📊 Output Format
 
-Git-Ingest supports two output formats optimized for different use cases:
+Git-Ingest supports two output formats optimized for different use cases. **Markdown is now the default output format.**
 
-### 📝 Text Format (Default)
+### � Markdown Format (Default, LLM-Optimized)
 
-The classic plain text format with directory tree and file contents:
+The default output is a structured, semantic Markdown format designed for optimal AI/LLM processing:
 
 ```
-Directory structure for: /path/to/project
-Generated on: 2024-01-15T10:30:00.000Z
-Total items: 15
-
-├── package.json
-├── README.md
-├── src/
-│   ├── index.js
-│   └── utils/
-│       └── helpers.js
-
-================================================
-File: package.json
-================================================
-{
-  "name": "my-project",
-  "version": "1.0.0"
-}
-```
-
-### 📋 Markdown Format (LLM-Optimized)
-
-A structured, semantic format designed for optimal AI/LLM processing:
-
-```bash
-git-ingest --format markdown
+git-ingest
 ```
 
 Features:
@@ -157,7 +133,36 @@ Example markdown output structure:
 ```
 ````
 
-````
+### 📝 Text Format (Legacy)
+
+The classic plain text format with directory tree and file contents:
+
+```bash
+git-ingest --format text
+```
+
+Example:
+
+```
+Directory structure for: /path/to/project
+Generated on: 2024-01-15T10:30:00.000Z
+Total items: 15
+
+├── package.json
+├── README.md
+├── src/
+│   ├── index.js
+│   └── utils/
+│       └── helpers.js
+
+================================================
+File: package.json
+================================================
+{
+  "name": "my-project",
+  "version": "1.0.0"
+}
+```
 
 ## 🔧 Development
 
@@ -184,7 +189,7 @@ npm run lint
 
 # Format code
 npm run format
-````
+```
 
 ### Testing
 

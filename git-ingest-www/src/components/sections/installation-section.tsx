@@ -40,9 +40,9 @@ const usageExamples = [
     description: "Analyze the current working directory"
   },
   {
-    title: "Analyze Specific Directory",
-    command: "git-ingest /path/to/project",
-    description: "Analyze a specific project directory"
+    title: "Generate Markdown Report",
+    command: "git-ingest --format markdown",
+    description: "Generate structured markdown output with syntax highlighting"
   },
   {
     title: "Copy to Clipboard",
@@ -50,9 +50,9 @@ const usageExamples = [
     description: "Analyze and copy results to clipboard"
   },
   {
-    title: "Filter File Types",
-    command: 'git-ingest --include "*.js" "*.ts"',
-    description: "Only include JavaScript and TypeScript files"
+    title: "Analyze Specific Directory",
+    command: "git-ingest /path/to/project",
+    description: "Analyze a specific project directory"
   }
 ];
 
