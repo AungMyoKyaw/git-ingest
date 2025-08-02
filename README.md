@@ -1,5 +1,6 @@
 # Git-Ingest 🚀
 
+[![codecov](https://codecov.io/gh/AungMyoKyaw/git-ingest/branch/master/graph/badge.svg)](https://codecov.io/gh/AungMyoKyaw/git-ingest)
 [![npm downloads](https://img.shields.io/npm/dt/git-ingest.svg?style=flat-square)](https://npmjs.com/package/git-ingest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
