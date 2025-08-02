@@ -5,8 +5,10 @@
 
 import fs from "fs/promises";
 import path from "path";
+import pLimit from "p-limit";
 import { detectLanguage, getLanguageStats } from "./language-detector.js";
 import { Config } from "./config.js";
+import { PERFORMANCE_CONSTANTS } from "./constants.js";
 
 /**
  * Generate table of contents for the document
@@ -221,7 +223,7 @@ function generateFileContent(content, detection) {
 }
 
 /**
- * Generate complete file listing section
+ * Generate complete file listing section with parallel processing
  * @param {Array} filePaths - Array of file paths
  * @param {Object} options - Processing options
  * @returns {string} - Markdown complete file listing
@@ -240,7 +242,16 @@ async function generateCompleteFileListing(filePaths, options = {}) {
   let skippedCount = 0;
   const { progress } = options;
 
-  for (const filePath of filePaths) {
+  // Create concurrency limiter based on performance constants
+  const DYNAMIC_SCALING_DIVISOR = 5;
+  const concurrencyLimit = Math.min(
+    PERFORMANCE_CONSTANTS.DEFAULT_CONCURRENCY_LIMIT,
+    Math.max(1, Math.floor(filePaths.length / DYNAMIC_SCALING_DIVISOR)) // Dynamic scaling for file reading
+  );
+  const limit = pLimit(concurrencyLimit);
+
+  // Process files with controlled concurrency
+  const processFile = async (filePath) => {
     try {
       // Check if file should be skipped
       const { shouldSkipForContent } = await import("./tree-generator.js");
@@ -251,19 +262,20 @@ async function generateCompleteFileListing(filePaths, options = {}) {
 
       if (skipInfo.skip) {
         // Generate placeholder for skipped files
-        sections.push(generateFileHeader(filePath, stats, detection));
-        sections.push(`> **⏭️ Skipped:** ${skipInfo.reason}`);
-        sections.push("");
+        const fileHeader = generateFileHeader(filePath, stats, detection);
+        const skipNotice = `> **⏭️ Skipped:** ${skipInfo.reason}`;
+
         skippedCount++;
 
         if (progress) {
           progress.reportFileProgress(filePath, 0, "skipped");
         }
-        continue;
+
+        return { content: `${fileHeader}${skipNotice}\n\n`, type: "skipped" };
       }
 
       // Generate file header
-      sections.push(generateFileHeader(filePath, stats, detection));
+      const fileHeader = generateFileHeader(filePath, stats, detection);
 
       // Read and add content
       try {
@@ -285,28 +297,42 @@ async function generateCompleteFileListing(filePaths, options = {}) {
           content = await fs.readFile(filePath, "utf8");
         }
 
-        sections.push(generateFileContent(content, detection));
+        const fileContent = generateFileContent(content, detection);
         processedCount++;
 
         if (progress) {
           progress.reportFileProgress(filePath, stats.size, "processed");
         }
+
+        return { content: `${fileHeader}${fileContent}`, type: "processed" };
       } catch (readError) {
-        sections.push(
-          `> **❌ Error:** Could not read file content: ${readError.message}`
-        );
-        sections.push("");
+        const errorContent = `> **❌ Error:** Could not read file content: ${readError.message}\n\n`;
 
         if (progress) {
           progress.reportFileProgress(filePath, 0, "error");
         }
+
+        return { content: `${fileHeader}${errorContent}`, type: "error" };
       }
     } catch {
       if (progress) {
         progress.reportFileProgress(filePath, 0, "error");
       }
+      return { content: "", type: "error" };
     }
-  }
+  };
+
+  // Execute file processing with concurrency control
+  const results = await Promise.allSettled(
+    filePaths.map((filePath) => limit(() => processFile(filePath)))
+  );
+
+  // Collect successful results and maintain order
+  const fileContents = results
+    .filter((result) => result.status === "fulfilled" && result.value.content)
+    .map((result) => result.value.content);
+
+  sections.push(...fileContents);
 
   // Add processing summary
   sections.push("---");
@@ -316,6 +342,7 @@ async function generateCompleteFileListing(filePaths, options = {}) {
   sections.push(`- **Files Processed:** ${processedCount}`);
   sections.push(`- **Files Skipped:** ${skippedCount}`);
   sections.push(`- **Total Files:** ${filePaths.length}`);
+  sections.push(`- **Concurrency Limit:** ${concurrencyLimit}`);
   sections.push("");
 
   return sections.join("\n");

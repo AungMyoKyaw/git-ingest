@@ -2,7 +2,6 @@
 
 import { Command, Option } from "commander";
 import clipboardy from "clipboardy";
-import chalk from "chalk";
 import fs from "fs/promises";
 import { constants as fsConstants } from "fs";
 import path from "path";
@@ -15,6 +14,7 @@ import {
   DirectoryError
 } from "./error-handler.js";
 import { createProgressReporter } from "./progress-reporter.js";
+import { theme } from "./theme.js";
 
 // Version from package.json
 const packageJson = JSON.parse(
@@ -39,7 +39,7 @@ function checkDeprecatedOptions() {
   }
 
   if (warnings.length > 0) {
-    console.log(chalk.yellow(`\n${warnings.join("\n")}\n`));
+    console.log(theme.warning(`\n${warnings.join("\n")}\n`));
   }
 }
 
@@ -178,14 +178,16 @@ class GitIngestApp {
       const targetDir = await this.validateDirectory(directory);
       this.validateOptions(options);
 
-      this.progress.success(`Directory validated: ${chalk.blue(targetDir)}`);
+      this.progress.success(
+        `Directory validated: ${theme.filePath(targetDir)}`
+      );
 
       const fileName = this.generateFileName(options);
 
       if (!options.quiet) {
-        console.log(chalk.cyan(`\n🔍 Analyzing project: ${targetDir}`));
-        console.log(chalk.cyan(`📄 Output file: ${fileName}`));
-        console.log(chalk.cyan(`📝 Format: ${options.format}`));
+        console.log(theme.info(`\n🔍 Analyzing project: ${targetDir}`));
+        console.log(theme.info(`📄 Output file: ${fileName}`));
+        console.log(theme.info(`📝 Format: ${options.format}`));
       }
 
       // Generate directory tree
@@ -218,7 +220,7 @@ class GitIngestApp {
         ...options,
         config: this.config
       });
-      this.progress.succeed(`Found ${chalk.yellow(filePaths.length)} files`);
+      this.progress.succeed(`Found ${theme.highlight(filePaths.length)} files`);
 
       // Append file contents with enhanced progress tracking
       this.progress.start("Processing file contents...", filePaths.length);
@@ -335,7 +337,8 @@ program
       }
       await app.processDirectory(directory, options);
     } catch {
-      // Error already handled by app.processDirectory
+      // Error already handled by error handler in app.processDirectory
+      // Simply exit with error code as recommended by audit
       process.exit(1);
     }
   });

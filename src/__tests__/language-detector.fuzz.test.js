@@ -27,8 +27,8 @@ describe("Language Detector Fuzz/Property Tests", () => {
   });
 
   test("should handle very long filenames and paths", () => {
-    const longName = "a".repeat(255) + ".js";
-    const longPath = "/tmp/" + Array(20).fill(longName).join("/");
+    const longName = `${"a".repeat(255)}.js`;
+    const longPath = `/tmp/${Array(20).fill(longName).join("/")}`;
     expect(() => detectLanguage(longPath)).not.toThrow();
     const result = detectLanguage(longPath);
     expect(result).toHaveProperty("language");

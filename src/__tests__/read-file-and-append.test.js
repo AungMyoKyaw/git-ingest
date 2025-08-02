@@ -145,7 +145,7 @@ describe("Read File and Append Module", () => {
 
       const content = await fs.readFile(outputFile, "utf8");
       expect(content).toContain("Small file content");
-      expect(content).toContain("Error checking file");
+      expect(content).toContain("Cannot access file");
     });
 
     test("should show processing summary in verbose mode", async () => {
@@ -214,7 +214,7 @@ describe("Read File and Append Module", () => {
 
       const content = await fs.readFile(outputFile, "utf8");
       expect(content).toContain("Small file content");
-      expect(content).toContain("Error checking file");
+      expect(content).toContain("Cannot access file");
     });
   });
 

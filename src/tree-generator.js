@@ -1,10 +1,10 @@
 import fs from "fs/promises";
-import { existsSync, statSync } from "fs";
+import { statSync } from "fs";
 import path from "path";
 import ignore from "ignore";
 import { isBinaryFileSync } from "isbinaryfile";
-import chalk from "chalk";
 import { Config } from "./config.js";
+import { theme } from "./theme.js";
 
 // Parse gitignore files and create ignore instance
 async function createIgnoreFilter(baseDir, options = {}) {
@@ -12,26 +12,35 @@ async function createIgnoreFilter(baseDir, options = {}) {
   const ig = ignore();
 
   try {
-    // Add default patterns from config
-    ig.add(config.getIgnorePatterns(options.exclude));
+    // Add default patterns from config (now async)
+    const ignorePatterns = await config.getIgnorePatterns(options.exclude);
+    ig.add(ignorePatterns);
 
     // Read .gitignore file if it exists
     const gitignorePath = path.join(baseDir, ".gitignore");
-    if (existsSync(gitignorePath)) {
+
+    try {
+      // Use async fs.access instead of existsSync
+      await fs.access(gitignorePath);
+
       try {
         const gitignoreContent = await fs.readFile(gitignorePath, "utf8");
         ig.add(gitignoreContent);
 
         if (options.verbose) {
-          console.log(chalk.gray(`📋 Loaded .gitignore from ${gitignorePath}`));
+          console.log(
+            theme.muted(`📋 Loaded .gitignore from ${gitignorePath}`)
+          );
         }
       } catch (error) {
         if (options.verbose) {
           console.warn(
-            chalk.yellow(`⚠️  Could not read .gitignore: ${error.message}`)
+            theme.warning(`⚠️  Could not read .gitignore: ${error.message}`)
           );
         }
       }
+    } catch {
+      // .gitignore doesn't exist, continue silently
     }
 
     // Handle include patterns (if specified, only include matching files)
@@ -69,9 +78,18 @@ function shouldSkipForContent(filePath, options = {}) {
     }
 
     // Use sync stat since isBinaryFileSync also uses sync operations
-    const stats = existsSync(filePath) ? statSync(filePath) : null;
+    // This is a limitation of the binary detection library
+    let stats;
+    try {
+      stats = statSync(filePath);
+    } catch (error) {
+      return {
+        skip: true,
+        reason: `Cannot access file: ${error.message}`
+      };
+    }
 
-    if (stats && stats.size > config.maxFileSizeBytes) {
+    if (stats.size > config.maxFileSizeBytes) {
       return {
         skip: true,
         reason: `File too large (${config.formatFileSize(stats.size)})`
@@ -119,7 +137,7 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
           } catch (statError) {
             if (options.verbose) {
               console.warn(
-                chalk.yellow(
+                theme.warning(
                   `⚠️  Could not stat ${fullPath}: ${statError.message}`
                 )
               );
@@ -147,7 +165,7 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
         // Add size info for large files
         let displayName = item.name;
         if (!item.isDirectory && item.size > 1024 * 1024) {
-          displayName += chalk.gray(
+          displayName += theme.muted(
             ` (${(item.size / 1024 / 1024).toFixed(1)}MB)`
           );
         }
@@ -162,7 +180,7 @@ async function displayTreeWithGitignore(dirPath, options = {}) {
     } catch (error) {
       if (options.verbose) {
         console.warn(
-          chalk.yellow(
+          theme.warning(
             `⚠️  Could not read directory ${currentPath}: ${error.message}`
           )
         );
@@ -203,7 +221,7 @@ async function getAllFilePaths(dirPath, options = {}) {
           } catch (statError) {
             if (options.verbose) {
               console.warn(
-                chalk.yellow(
+                theme.warning(
                   `⚠️  Could not stat ${fullPath}: ${statError.message}`
                 )
               );
@@ -214,7 +232,7 @@ async function getAllFilePaths(dirPath, options = {}) {
     } catch (error) {
       if (options.verbose) {
         console.warn(
-          chalk.yellow(
+          theme.warning(
             `⚠️  Could not read directory ${currentPath}: ${error.message}`
           )
         );
@@ -244,7 +262,7 @@ async function saveTreeToFile(dirPath, fileName, options = {}) {
     await fs.writeFile(fileName, content, "utf8");
 
     if (options.verbose) {
-      console.log(chalk.gray(`📁 Directory tree saved to ${fileName}`));
+      console.log(theme.muted(`📁 Directory tree saved to ${fileName}`));
     }
   } catch (error) {
     throw new Error(`Failed to save tree to file: ${error.message}`);

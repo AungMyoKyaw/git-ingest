@@ -10,14 +10,14 @@ describe("Config Module", () => {
       expect(config.maxFileSizeBytes).toBe(10 * 1024 * 1024);
     });
 
-    test("should provide default ignore patterns", () => {
+    test("should provide default ignore patterns", async () => {
       const config = new Config();
-      const patterns = config.getIgnorePatterns();
+      const patterns = await config.getIgnorePatterns();
 
-      expect(patterns).toContain("node_modules");
-      expect(patterns).toContain(".git");
+      expect(patterns).toContain("node_modules/");
+      expect(patterns).toContain(".git/");
       expect(patterns).toContain("*.log");
-      expect(patterns).toContain("dist");
+      expect(patterns).toContain("dist/");
     });
 
     test("should calculate file size limits correctly", () => {

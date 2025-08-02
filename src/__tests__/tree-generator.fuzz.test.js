@@ -13,10 +13,10 @@ describe("Tree Generator Fuzz/Edge Case Tests", () => {
   const testDir = path.join(__dirname, "tree-fuzz-temp");
 
   let longNameCreated = false;
-  let longName = "a".repeat(255) + ".js";
+  const longName = `${"a".repeat(255)}.js`;
   // Move these to describe scope so they're accessible in tests
-  let conCreated = true,
-    auxCreated = true;
+  let conCreated = true;
+  let auxCreated = true;
   beforeAll(async () => {
     await fs.mkdir(testDir, { recursive: true });
     await fs.writeFile(path.join(testDir, "file with spaces.txt"), "test");

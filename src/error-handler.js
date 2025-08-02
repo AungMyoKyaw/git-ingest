@@ -3,8 +3,8 @@
  * Provides consistent error types, messages, and handling strategies
  */
 
-import chalk from "chalk";
 import path from "path";
+import { theme } from "./theme.js";
 
 /**
  * Base error class for git-ingest specific errors
@@ -109,22 +109,22 @@ export class ErrorHandler {
 
     // Show suggestions if available
     if (formattedError.suggestions.length > 0) {
-      console.error(chalk.yellow("\n💡 Suggestions:"));
+      console.error(theme.warning("\n💡 Suggestions:"));
       formattedError.suggestions.forEach((suggestion, index) => {
-        console.error(chalk.yellow(`   ${index + 1}. ${suggestion}`));
+        console.error(theme.warning(`   ${index + 1}. ${suggestion}`));
       });
     }
 
     // Show stack trace in verbose mode
     if (this.verbose && error.stack) {
-      console.error(chalk.gray("\nStack trace:"));
-      console.error(chalk.gray(error.stack));
+      console.error(theme.muted("\nStack trace:"));
+      console.error(theme.muted(error.stack));
     }
 
     // Show additional details for custom errors
     if (error instanceof GitIngestError && this.verbose) {
-      console.error(chalk.gray("\nError details:"));
-      console.error(chalk.gray(JSON.stringify(error.details, null, 2)));
+      console.error(theme.muted("\nError details:"));
+      console.error(theme.muted(JSON.stringify(error.details, null, 2)));
     }
 
     if (exitProcess) {
@@ -136,7 +136,7 @@ export class ErrorHandler {
    * Format error message with icon and color
    */
   formatError(error) {
-    const message = chalk.red("❌ Error: ") + error.message;
+    const message = theme.error("❌ Error: ") + error.message;
     const suggestions = [];
 
     // Add specific formatting and suggestions based on error type
@@ -312,7 +312,7 @@ export class ErrorHandler {
    */
   warn(message) {
     if (!this.quiet) {
-      console.warn(chalk.yellow("⚠️  Warning: ") + message);
+      console.warn(theme.warning("⚠️  Warning: ") + message);
     }
   }
 
@@ -321,7 +321,7 @@ export class ErrorHandler {
    */
   info(message) {
     if (!this.quiet) {
-      console.log(chalk.blue("ℹ️  Info: ") + message);
+      console.log(theme.blue("ℹ️  Info: ") + message);
     }
   }
 
@@ -330,7 +330,7 @@ export class ErrorHandler {
    */
   success(message) {
     if (!this.quiet) {
-      console.log(chalk.green("✅ ") + message);
+      console.log(theme.green("✅ ") + message);
     }
   }
 }
@@ -340,12 +340,12 @@ export class ErrorHandler {
  */
 export function setupGlobalErrorHandlers(errorHandler) {
   process.on("uncaughtException", (error) => {
-    console.error(chalk.red("💥 Uncaught Exception:"));
+    console.error(theme.error("💥 Uncaught Exception:"));
     errorHandler.handle(error, true);
   });
 
   process.on("unhandledRejection", (error) => {
-    console.error(chalk.red("💥 Unhandled Rejection:"));
+    console.error(theme.error("💥 Unhandled Rejection:"));
     errorHandler.handle(error, true);
   });
 }

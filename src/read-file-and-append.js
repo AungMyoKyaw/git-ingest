@@ -2,9 +2,11 @@ import fs from "fs/promises";
 import { createReadStream, createWriteStream } from "fs";
 import path from "path";
 import { pipeline } from "stream/promises";
-import chalk from "chalk";
+import pLimit from "p-limit";
 import { shouldSkipForContent } from "./tree-generator.js";
 import { Config } from "./config.js";
+import { theme } from "./theme.js";
+import { PERFORMANCE_CONSTANTS, MESSAGES } from "./constants.js";
 
 // Format file header with metadata
 function formatFileHeader(filePath, config = null) {
@@ -50,7 +52,7 @@ async function readFileWithTruncation(filePath, config = null) {
   }
 }
 
-// Stream-based file content appending for memory efficiency
+// Stream-based file content appending for memory efficiency with concurrency control
 async function appendFileContentsToTree(
   filePaths,
   outputFilePath,
@@ -58,7 +60,7 @@ async function appendFileContentsToTree(
 ) {
   if (!Array.isArray(filePaths) || filePaths.length === 0) {
     if (options.verbose) {
-      console.log(chalk.yellow("📝 No files to process"));
+      console.log(theme.warning("📝 No files to process"));
     }
     return;
   }
@@ -73,6 +75,13 @@ async function appendFileContentsToTree(
 
   const { progress } = options;
 
+  // Create concurrency limiter based on performance constants
+  const concurrencyLimit = Math.min(
+    PERFORMANCE_CONSTANTS.DEFAULT_CONCURRENCY_LIMIT,
+    Math.max(1, Math.floor(filePaths.length / 10)) // Dynamic scaling
+  );
+  const limit = pLimit(concurrencyLimit);
+
   let processedCount = 0;
   let skippedCount = 0;
   let errorCount = 0;
@@ -84,7 +93,8 @@ async function appendFileContentsToTree(
       encoding: "utf8"
     });
 
-    for (const filePath of filePaths) {
+    // Process files with controlled concurrency
+    const processFile = async (filePath) => {
       try {
         // Check if file should be skipped (binary, too large, etc.)
         const skipInfo = shouldSkipForContent(filePath, { ...options, config });
@@ -101,12 +111,12 @@ async function appendFileContentsToTree(
 
           if (options.verbose) {
             console.log(
-              chalk.yellow(
-                `⏭️  Skipped ${path.relative(process.cwd(), filePath)}: ${skipInfo.reason}`
+              theme.skipWithIcon(
+                `Skipped ${path.relative(process.cwd(), filePath)}: ${skipInfo.reason}`
               )
             );
           }
-          continue;
+          return;
         }
 
         // Write file header
@@ -138,8 +148,8 @@ async function appendFileContentsToTree(
           if (options.verbose) {
             const sizeFormatted = config.formatFileSize(stats.size);
             console.log(
-              chalk.green(
-                `✅ Processed ${path.relative(process.cwd(), filePath)} (${sizeFormatted})`
+              theme.fileProcessed(
+                `Processed ${path.relative(process.cwd(), filePath)} (${sizeFormatted})`
               )
             );
           }
@@ -155,8 +165,8 @@ async function appendFileContentsToTree(
 
           if (options.verbose) {
             console.warn(
-              chalk.red(
-                `❌ Error reading ${path.relative(process.cwd(), filePath)}: ${readError.message}`
+              theme.fileError(
+                `Error reading ${path.relative(process.cwd(), filePath)}: ${readError.message}`
               )
             );
           }
@@ -168,13 +178,18 @@ async function appendFileContentsToTree(
         }
         if (options.verbose) {
           console.warn(
-            chalk.red(
-              `❌ Error processing ${path.relative(process.cwd(), filePath)}: ${fileError.message}`
+            theme.fileError(
+              `Error processing ${path.relative(process.cwd(), filePath)}: ${fileError.message}`
             )
           );
         }
       }
-    }
+    };
+
+    // Execute file processing with concurrency control
+    await Promise.allSettled(
+      filePaths.map((filePath) => limit(() => processFile(filePath)))
+    );
 
     // Close the write stream
     await new Promise((resolve, reject) => {
@@ -186,17 +201,18 @@ async function appendFileContentsToTree(
 
     // Log summary
     if (!options.quiet) {
-      console.log(chalk.green("\n📊 File processing summary:"));
-      console.log(chalk.green(`   ✅ Processed: ${processedCount} files`));
+      console.log(theme.success("\n📊 File processing summary:"));
+      console.log(theme.successWithIcon(`Processed: ${processedCount} files`));
       if (skippedCount > 0) {
-        console.log(chalk.yellow(`   ⏭️  Skipped: ${skippedCount} files`));
+        console.log(theme.skipWithIcon(`Skipped: ${skippedCount} files`));
       }
       if (errorCount > 0) {
-        console.log(chalk.red(`   ❌ Errors: ${errorCount} files`));
+        console.log(theme.errorWithIcon(`Errors: ${errorCount} files`));
       }
+      console.log(theme.info(`Concurrency limit: ${concurrencyLimit}`));
     }
   } catch (error) {
-    throw new Error(`Failed to append file contents: ${error.message}`);
+    throw new Error(`${MESSAGES.PROCESSING_COMPLETE}: ${error.message}`);
   }
 }
 

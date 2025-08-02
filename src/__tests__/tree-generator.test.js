@@ -301,7 +301,7 @@ describe("Tree Generator", () => {
       const result = shouldSkipForContent(nonExistentFile);
 
       expect(result.skip).toBe(true);
-      expect(result.reason).toContain("Error checking file");
+      expect(result.reason).toContain("Cannot access file");
     });
 
     test("should handle PNG files", () => {
