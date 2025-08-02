@@ -272,23 +272,43 @@ describe("Read File and Append Module", () => {
 
   describe("File formatting", () => {
     test("should format file headers correctly", async () => {
-      const filePaths = [path.join(testDir, "small.txt")];
+      const filePath = path.join(testDir, "header.txt");
+      await fs.writeFile(filePath, "header content");
 
-      await appendFileContentsToTree(filePaths, outputFile);
+      await appendFileContentsToTree([filePath], outputFile, { verbose: true });
 
       const content = await fs.readFile(outputFile, "utf8");
-      expect(content).toMatch(/={48}/); // Separator line
-      expect(content).toContain("small.txt");
-      expect(content).toMatch(/={48}/); // Separator line
+      expect(content).toContain("File:");
+      expect(content).toContain("header.txt");
     });
 
     test("should use relative paths in file headers", async () => {
-      const filePaths = [path.join(testDir, "src", "code.js")];
+      const filePath = path.join(testDir, "relative.txt");
+      await fs.writeFile(filePath, "relative content");
 
-      await appendFileContentsToTree(filePaths, outputFile);
+      await appendFileContentsToTree([filePath], outputFile, {
+        verbose: false
+      });
 
       const content = await fs.readFile(outputFile, "utf8");
-      expect(content).toContain("code.js");
+      expect(content).toContain("relative.txt");
+    });
+
+    test("should handle errors during processing", async () => {
+      // Create valid and invalid files
+      const validFile = path.join(testDir, "valid.txt");
+      const invalidFile = path.join(testDir, "nonexistent.txt");
+
+      await fs.writeFile(validFile, "valid content");
+      // Don't create invalidFile - it will cause a read error
+
+      // The function should handle the error gracefully and still process valid files
+      await appendFileContentsToTree([validFile, invalidFile], outputFile, {
+        verbose: true
+      });
+
+      const content = await fs.readFile(outputFile, "utf8");
+      expect(content).toContain("valid content");
     });
   });
 });

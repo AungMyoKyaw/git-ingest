@@ -2,7 +2,9 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
+// Static fallback for metaUrl in Jest
+const metaUrl = "file://" + process.cwd() + "/src/__tests__/cli-unit.test.js";
+const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 
 // Import the GitIngestApp class by dynamically loading and extracting it from cli.js

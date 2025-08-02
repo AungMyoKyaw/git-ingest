@@ -8,6 +8,16 @@ import {
   createErrorHandler,
   setupGlobalErrorHandlers
 } from "../error-handler.js";
+import { vi } from "vitest";
+vi.mock("../theme.js", () => ({
+  theme: {
+    warning: (msg) => msg,
+    blue: (msg) => msg,
+    green: (msg) => msg,
+    error: (msg) => msg,
+    muted: (msg) => msg
+  }
+}));
 
 describe("Error Handler Module", () => {
   describe("Custom Error Classes", () => {
@@ -211,6 +221,64 @@ describe("Error Handler Module", () => {
       expect(() => {
         handler.success("Test success");
       }).not.toThrow();
+    });
+
+    test("should log warnings in non-quiet mode", () => {
+      const handler = new ErrorHandler({ quiet: false });
+      const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      handler.warn("Test warning");
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    test("should log info in non-quiet mode", () => {
+      const handler = new ErrorHandler({ quiet: false });
+      const spy = vi.spyOn(console, "log").mockImplementation(() => {});
+      handler.info("Test info");
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    test("should log success in non-quiet mode", () => {
+      const handler = new ErrorHandler({ quiet: false });
+      const spy = vi.spyOn(console, "log").mockImplementation(() => {});
+      handler.success("Test success");
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+  });
+
+  describe("Global Error Handlers", () => {
+    test("should handle uncaughtException", () => {
+      const handler = new ErrorHandler({ quiet: true });
+      const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const origProcessOn = process.on;
+      let called = false;
+      process.on = (event, cb) => {
+        if (event === "uncaughtException") {
+          called = true;
+        }
+      };
+      setupGlobalErrorHandlers(handler);
+      expect(called).toBe(true);
+      process.on = origProcessOn;
+      spy.mockRestore();
+    });
+
+    test("should handle unhandledRejection", () => {
+      const handler = new ErrorHandler({ quiet: true });
+      const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const origProcessOn = process.on;
+      let called = false;
+      process.on = (event, cb) => {
+        if (event === "unhandledRejection") {
+          called = true;
+        }
+      };
+      setupGlobalErrorHandlers(handler);
+      expect(called).toBe(true);
+      process.on = origProcessOn;
+      spy.mockRestore();
     });
   });
 

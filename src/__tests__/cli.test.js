@@ -3,7 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
 
-const __filename = fileURLToPath(import.meta.url);
+// Static fallback for metaUrl in Jest
+const metaUrl = "file://" + process.cwd() + "/src/__tests__/cli.test.js";
+const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 
 describe("CLI Module", () => {

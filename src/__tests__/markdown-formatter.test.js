@@ -5,6 +5,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { Config } from "../config.js";
 import {
   saveMarkdownTreeToFile,
   appendMarkdownFileContents,
@@ -15,8 +16,15 @@ import {
   generateFilesByCategory
 } from "../markdown-formatter.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Provide a static fallback for import.meta.url in Jest
+let __filename, __dirname;
+try {
+  __filename = fileURLToPath(import.meta.url);
+  __dirname = path.dirname(__filename);
+} catch {
+  __filename = __filename || __filename;
+  __dirname = __dirname || process.cwd();
+}
 
 describe("Markdown Formatter Module", () => {
   let testDir;
@@ -25,6 +33,13 @@ describe("Markdown Formatter Module", () => {
   beforeEach(async () => {
     // Create a temporary test directory
     testDir = path.join(__dirname, "test-temp-markdown");
+
+    try {
+      await fs.rm(testDir, { recursive: true, force: true });
+    } catch (error) {
+      // Directory might not exist, ignore error
+    }
+
     await fs.mkdir(testDir, { recursive: true });
 
     // Create test files
@@ -246,6 +261,7 @@ describe("Markdown Formatter Module", () => {
       expect(content).toContain("# Initial Content");
       expect(content).toContain("## 📋 Complete File Listing");
       expect(content).toContain("### 📄 `test.js`");
+      // The actual output shows the full path from the working directory
       expect(content).toContain(
         "**Path:** `src/__tests__/test-temp-markdown/test.js`"
       );
@@ -401,6 +417,100 @@ describe("Markdown Formatter Module", () => {
 
       // Verify statistics
       expect(content).toContain("- **Files Processed:** 3");
+    });
+  });
+
+  describe("Additional Coverage Tests", () => {
+    test("should handle appendMarkdownFileContents with empty array and verbose mode", async () => {
+      const outputFile = path.join(testDir, "empty-test.md");
+      await fs.writeFile(outputFile, "# Initial Content\n\n");
+
+      const originalConsoleLog = console.log;
+      const mockConsoleLog = vi.fn();
+      console.log = mockConsoleLog;
+
+      // Test with empty array and verbose mode
+      await appendMarkdownFileContents([], outputFile, {
+        config: new Config(),
+        progressReporter: null,
+        verbose: true
+      });
+
+      expect(mockConsoleLog).toHaveBeenCalledWith(
+        "📝 No files to process for markdown output"
+      );
+      console.log = originalConsoleLog;
+
+      const content = await fs.readFile(outputFile, "utf8");
+      expect(content).toContain("# Initial Content");
+    });
+
+    test("should handle appendMarkdownFileContents with verbose success message", async () => {
+      const outputFile = path.join(testDir, "verbose-test.md");
+      await fs.writeFile(outputFile, "# Initial Content\n\n");
+
+      const originalConsoleLog = console.log;
+      const mockConsoleLog = vi.fn();
+      console.log = mockConsoleLog;
+
+      // Test with files and verbose mode
+      await appendMarkdownFileContents([testFile], outputFile, {
+        config: new Config(),
+        progressReporter: null,
+        verbose: true
+      });
+
+      expect(mockConsoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(`📝 File contents appended to ${outputFile}`)
+      );
+      console.log = originalConsoleLog;
+    });
+
+    test("should handle appendMarkdownFileContents error branch", async () => {
+      const outputFile = path.join(testDir, "error-test.md");
+      await fs.writeFile(outputFile, "# Initial Content\n\n");
+
+      // Mock fs.appendFile to throw
+      const originalAppendFile = fs.appendFile;
+      fs.appendFile = async () => {
+        throw new Error("append fail");
+      };
+
+      let errorCaught = false;
+      try {
+        await appendMarkdownFileContents([testFile], outputFile, {
+          config: new Config(),
+          progressReporter: null,
+          verbose: true
+        });
+      } catch (e) {
+        errorCaught = true;
+        expect(e.message).toContain("Failed to append markdown file contents");
+      }
+      expect(errorCaught).toBe(true);
+      fs.appendFile = originalAppendFile;
+    });
+
+    test("should handle saveMarkdownTreeToFile error branch", async () => {
+      const outputFile = path.join(testDir, "error-tree.md");
+      const treeOutput = [".", "├── file1.js"];
+      // Mock fs.writeFile to throw
+      const originalWriteFile = fs.writeFile;
+      fs.writeFile = async () => {
+        throw new Error("write fail");
+      };
+
+      let errorCaught = false;
+      try {
+        await saveMarkdownTreeToFile(testDir, outputFile, treeOutput, {
+          verbose: true
+        });
+      } catch (e) {
+        errorCaught = true;
+        expect(e.message).toContain("Failed to save markdown tree to file");
+      }
+      expect(errorCaught).toBe(true);
+      fs.writeFile = originalWriteFile;
     });
   });
 });

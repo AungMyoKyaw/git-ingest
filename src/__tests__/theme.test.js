@@ -84,6 +84,14 @@ describe("formatSizeWithColor", () => {
     expect(formatSizeWithColor(20 * 1024 * 1024)).toContain("MB");
     expect(formatSizeWithColor(20 * 1024 * 1024)).toContain("\u001b");
   });
+
+  it("should handle edge size formats correctly", () => {
+    // Test KB formatting (around line 92)
+    expect(formatSizeWithColor(2048)).toContain("2.0 KB"); // Exactly 2KB to trigger KB format
+
+    // Test GB formatting (around line 96)
+    expect(formatSizeWithColor(2 * 1024 * 1024 * 1024)).toContain("2.0 GB"); // 2GB to trigger GB format
+  });
 });
 
 describe("progressMessages", () => {

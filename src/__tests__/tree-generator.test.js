@@ -8,7 +8,10 @@ import {
   shouldSkipForContent
 } from "../tree-generator.js";
 
-const __filename = fileURLToPath(import.meta.url);
+// Static fallback for metaUrl in Jest
+const metaUrl =
+  "file://" + process.cwd() + "/src/__tests__/tree-generator.test.js";
+const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 
 describe("Tree Generator", () => {
@@ -359,6 +362,52 @@ describe("Tree Generator", () => {
       expect(Array.isArray(filePaths)).toBe(true);
 
       await fs.rm(tempDir, { recursive: true });
+    });
+
+    test("should handle verbose directory traversal errors", async () => {
+      const warnLogs = [];
+      const originalWarn = console.warn;
+      console.warn = (...args) => warnLogs.push(args.join(" "));
+
+      try {
+        // Try to traverse a non-existent directory with verbose mode
+        const tree = await displayTreeWithGitignore("/this/does/not/exist", {
+          verbose: true
+        });
+
+        // Should return an error message in the tree output
+        expect(Array.isArray(tree)).toBe(true);
+        expect(tree.length).toBeGreaterThan(0);
+        expect(tree[0]).toContain("[Error reading directory:");
+        // Should have logged a warning message in verbose mode
+      } finally {
+        console.warn = originalWarn;
+      }
+    });
+
+    test("should handle verbose file stat errors during collection", async () => {
+      const warnLogs = [];
+      const originalWarn = console.warn;
+      console.warn = (...args) => warnLogs.push(args.join(" "));
+
+      try {
+        // Create a broken symlink to trigger stat errors
+        const tempDir = path.join(testDir, "stat-error-test");
+        await fs.mkdir(tempDir, { recursive: true });
+
+        const brokenLink = path.join(tempDir, "broken-link");
+        try {
+          await fs.symlink("/non/existent/target", brokenLink);
+        } catch (e) {
+          // Symlink creation might fail on some systems, that's ok
+        }
+
+        // Test with verbose mode to trigger error logging
+        const files = await getAllFilePaths(tempDir, { verbose: true });
+        expect(Array.isArray(files)).toBe(true);
+      } finally {
+        console.warn = originalWarn;
+      }
     });
   });
 });

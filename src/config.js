@@ -8,7 +8,16 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { FILE_PROCESSING_CONSTANTS, FORMAT_CONSTANTS } from "./constants.js";
 
-const __filename = fileURLToPath(import.meta.url);
+// Safe fallback for import.meta.url in Jest/CommonJS
+function getMetaUrl() {
+  try {
+    // Only works in ESM
+    return import.meta.url;
+  } catch {
+    return "file://" + process.cwd() + "/src/config.js";
+  }
+}
+const __filename = fileURLToPath(getMetaUrl());
 const __dirname = path.dirname(__filename);
 
 /**

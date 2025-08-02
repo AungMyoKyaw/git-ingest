@@ -17,8 +17,18 @@ import { createProgressReporter } from "./progress-reporter.js";
 import { theme } from "./theme.js";
 
 // Version from package.json
+
+// Safe fallback for import.meta.url in Jest/CommonJS
+function getMetaUrl() {
+  try {
+    return import.meta.url;
+  } catch {
+    return "file://" + process.cwd() + "/src/cli.js";
+  }
+}
+const metaUrl = getMetaUrl();
 const packageJson = JSON.parse(
-  await fs.readFile(new URL("../package.json", import.meta.url), "utf-8")
+  await fs.readFile(new URL("../package.json", metaUrl), "utf-8")
 );
 
 /**

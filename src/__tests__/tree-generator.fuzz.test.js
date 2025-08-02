@@ -6,7 +6,10 @@ import {
   displayTreeWithGitignore
 } from "../tree-generator.js";
 
-const __filename = fileURLToPath(import.meta.url);
+// Static fallback for metaUrl in Jest
+const metaUrl =
+  "file://" + process.cwd() + "/src/__tests__/tree-generator.fuzz.test.js";
+const __filename = fileURLToPath(metaUrl);
 const __dirname = path.dirname(__filename);
 
 describe("Tree Generator Fuzz/Edge Case Tests", () => {
