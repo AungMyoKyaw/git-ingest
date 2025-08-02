@@ -10,13 +10,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Set up Node.js (latest LTS)
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "lts/*"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Update dependencies to latest
+        run: |
+          rm -f package-lock.json
+          npm install --prefer-online
+          npm update
 
       - name: Run tests and generate coverage
         run: npm run test:coverage
